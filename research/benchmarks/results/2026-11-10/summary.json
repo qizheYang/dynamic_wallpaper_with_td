@@ -1,0 +1,456 @@
+{
+  "method": "Probe: omit first4s and final1s of each phase; CPU cumulative-time delta across retained endpoints. System: use last probe phase stamp; omit first4s/final3s; GPU remains global, unattributed.",
+  "limitations": "Short pilot, one run per profile, ambient windows/background load uncontrolled; window_visible (NSWindow.occlusionState) means at least partial visibility, not full-screen visibility. Not a power or long-term memory-leak measurement.",
+  "runs": [
+    {
+      "run": "1080p24",
+      "finish_reason": "schedule_complete",
+      "errors": [],
+      "measurement_errors": [],
+      "phases": [
+        {
+          "index": 0,
+          "phase": "idle",
+          "retained_samples": 5,
+          "retained_system_samples": 2,
+          "cpu_percent_one_core": 0.0524,
+          "cpu_interval_seconds": 4.75,
+          "footprint_mean_mib": 7.7383,
+          "footprint_peak_mib": 7.8445,
+          "rss_mean_mib": 55.2719,
+          "visible_samples": 0,
+          "ready_samples": 0,
+          "rate_min": 0,
+          "rate_max": 0,
+          "loop_count_max": 0,
+          "time_control_statuses": [
+            -1
+          ],
+          "gpu_global_range_percent": [
+            49,
+            50
+          ],
+          "gpu_global_mean_percent": 49.5,
+          "windowserver_cpu_percent_one_core": 46.4381,
+          "all_vtdecoder_rss_mean_mib_not_attributed": 205.8594
+        },
+        {
+          "index": 1,
+          "phase": "play",
+          "retained_samples": 18,
+          "retained_system_samples": 9,
+          "cpu_percent_one_core": 1.5266,
+          "cpu_interval_seconds": 18.7493,
+          "footprint_mean_mib": 16.1866,
+          "footprint_peak_mib": 17.0477,
+          "rss_mean_mib": 69.3542,
+          "visible_samples": 18,
+          "ready_samples": 18,
+          "rate_min": 1,
+          "rate_max": 1,
+          "loop_count_max": 5,
+          "time_control_statuses": [
+            2
+          ],
+          "gpu_global_range_percent": [
+            35,
+            57
+          ],
+          "gpu_global_mean_percent": 46.8889,
+          "windowserver_cpu_percent_one_core": 47.9859,
+          "all_vtdecoder_rss_mean_mib_not_attributed": 245.7986
+        },
+        {
+          "index": 2,
+          "phase": "pause",
+          "retained_samples": 9,
+          "retained_system_samples": 4,
+          "cpu_percent_one_core": 0.061,
+          "cpu_interval_seconds": 9.2493,
+          "footprint_mean_mib": 16.0721,
+          "footprint_peak_mib": 16.329,
+          "rss_mean_mib": 69.3733,
+          "visible_samples": 9,
+          "ready_samples": 9,
+          "rate_min": 0,
+          "rate_max": 0,
+          "loop_count_max": 6,
+          "time_control_statuses": [
+            0
+          ],
+          "gpu_global_range_percent": [
+            30,
+            48
+          ],
+          "gpu_global_mean_percent": 41.5,
+          "windowserver_cpu_percent_one_core": 44.3875,
+          "all_vtdecoder_rss_mean_mib_not_attributed": 243.7695
+        },
+        {
+          "index": 3,
+          "phase": "idle",
+          "retained_samples": 4,
+          "retained_system_samples": 2,
+          "cpu_percent_one_core": 0.0837,
+          "cpu_interval_seconds": 3.5,
+          "footprint_mean_mib": 14.1415,
+          "footprint_peak_mib": 14.3758,
+          "rss_mean_mib": 67.6016,
+          "visible_samples": 0,
+          "ready_samples": 0,
+          "rate_min": 0,
+          "rate_max": 0,
+          "loop_count_max": 0,
+          "time_control_statuses": [
+            -1
+          ],
+          "gpu_global_range_percent": [
+            55,
+            60
+          ],
+          "gpu_global_mean_percent": 57.5,
+          "windowserver_cpu_percent_one_core": 44.8869,
+          "all_vtdecoder_rss_mean_mib_not_attributed": 241.8984
+        }
+      ]
+    },
+    {
+      "run": "1080p24-occlusion",
+      "finish_reason": "schedule_complete",
+      "errors": [],
+      "measurement_errors": [],
+      "phases": [
+        {
+          "index": 0,
+          "phase": "idle",
+          "retained_samples": 5,
+          "retained_system_samples": 1,
+          "cpu_percent_one_core": 0.0517,
+          "cpu_interval_seconds": 4.2506,
+          "footprint_mean_mib": 7.6977,
+          "footprint_peak_mib": 7.7352,
+          "rss_mean_mib": 55.9625,
+          "visible_samples": 0,
+          "ready_samples": 0,
+          "rate_min": 0,
+          "rate_max": 0,
+          "loop_count_max": 0,
+          "time_control_statuses": [
+            -1
+          ],
+          "gpu_global_range_percent": [
+            41,
+            41
+          ],
+          "gpu_global_mean_percent": 41,
+          "all_vtdecoder_rss_mean_mib_not_attributed": 251.7969
+        },
+        {
+          "index": 1,
+          "phase": "play",
+          "retained_samples": 9,
+          "retained_system_samples": 4,
+          "cpu_percent_one_core": 1.3226,
+          "cpu_interval_seconds": 9.2499,
+          "footprint_mean_mib": 15.8742,
+          "footprint_peak_mib": 17.2353,
+          "rss_mean_mib": 70.7031,
+          "visible_samples": 9,
+          "ready_samples": 9,
+          "rate_min": 1,
+          "rate_max": 1,
+          "loop_count_max": 3,
+          "time_control_statuses": [
+            2
+          ],
+          "gpu_global_range_percent": [
+            26,
+            57
+          ],
+          "gpu_global_mean_percent": 42,
+          "windowserver_cpu_percent_one_core": 48.9034,
+          "all_vtdecoder_rss_mean_mib_not_attributed": 261.8398
+        },
+        {
+          "index": 2,
+          "phase": "cover",
+          "retained_samples": 9,
+          "retained_system_samples": 4,
+          "cpu_percent_one_core": 0.0566,
+          "cpu_interval_seconds": 8.9997,
+          "footprint_mean_mib": 20.1936,
+          "footprint_peak_mib": 20.4853,
+          "rss_mean_mib": 75.1007,
+          "visible_samples": 0,
+          "ready_samples": 9,
+          "rate_min": 0,
+          "rate_max": 0,
+          "loop_count_max": 3,
+          "time_control_statuses": [
+            0
+          ],
+          "gpu_global_range_percent": [
+            20,
+            37
+          ],
+          "gpu_global_mean_percent": 31,
+          "windowserver_cpu_percent_one_core": 46.1159,
+          "all_vtdecoder_rss_mean_mib_not_attributed": 281.0781
+        },
+        {
+          "index": 3,
+          "phase": "uncover",
+          "retained_samples": 9,
+          "retained_system_samples": 4,
+          "cpu_percent_one_core": 1.5321,
+          "cpu_interval_seconds": 8.749,
+          "footprint_mean_mib": 16.5998,
+          "footprint_peak_mib": 16.9228,
+          "rss_mean_mib": 71.7205,
+          "visible_samples": 9,
+          "ready_samples": 9,
+          "rate_min": 1,
+          "rate_max": 1,
+          "loop_count_max": 7,
+          "time_control_statuses": [
+            2
+          ],
+          "gpu_global_range_percent": [
+            22,
+            33
+          ],
+          "gpu_global_mean_percent": 29,
+          "windowserver_cpu_percent_one_core": 47.0723,
+          "all_vtdecoder_rss_mean_mib_not_attributed": 252.6445
+        },
+        {
+          "index": 4,
+          "phase": "idle",
+          "retained_samples": 0,
+          "retained_system_samples": 0
+        }
+      ]
+    },
+    {
+      "run": "1080p30",
+      "finish_reason": "schedule_complete",
+      "errors": [],
+      "measurement_errors": [],
+      "phases": [
+        {
+          "index": 0,
+          "phase": "idle",
+          "retained_samples": 5,
+          "retained_system_samples": 2,
+          "cpu_percent_one_core": 0.0468,
+          "cpu_interval_seconds": 4.75,
+          "footprint_mean_mib": 7.6101,
+          "footprint_peak_mib": 7.6101,
+          "rss_mean_mib": 55.9062,
+          "visible_samples": 0,
+          "ready_samples": 0,
+          "rate_min": 0,
+          "rate_max": 0,
+          "loop_count_max": 0,
+          "time_control_statuses": [
+            -1
+          ],
+          "gpu_global_range_percent": [
+            41,
+            48
+          ],
+          "gpu_global_mean_percent": 44.5,
+          "windowserver_cpu_percent_one_core": 43.389,
+          "all_vtdecoder_rss_mean_mib_not_attributed": 235.4062
+        },
+        {
+          "index": 1,
+          "phase": "play",
+          "retained_samples": 17,
+          "retained_system_samples": 9,
+          "cpu_percent_one_core": 1.7364,
+          "cpu_interval_seconds": 18.2495,
+          "footprint_mean_mib": 16.375,
+          "footprint_peak_mib": 16.8603,
+          "rss_mean_mib": 71.3088,
+          "visible_samples": 17,
+          "ready_samples": 17,
+          "rate_min": 1,
+          "rate_max": 1,
+          "loop_count_max": 5,
+          "time_control_statuses": [
+            2
+          ],
+          "gpu_global_range_percent": [
+            0,
+            48
+          ],
+          "gpu_global_mean_percent": 28.7778,
+          "windowserver_cpu_percent_one_core": 48.5919,
+          "all_vtdecoder_rss_mean_mib_not_attributed": 270.4913
+        },
+        {
+          "index": 2,
+          "phase": "pause",
+          "retained_samples": 8,
+          "retained_system_samples": 5,
+          "cpu_percent_one_core": 0.0581,
+          "cpu_interval_seconds": 8.249,
+          "footprint_mean_mib": 16.1728,
+          "footprint_peak_mib": 16.3915,
+          "rss_mean_mib": 71.1406,
+          "visible_samples": 8,
+          "ready_samples": 8,
+          "rate_min": 0,
+          "rate_max": 0,
+          "loop_count_max": 6,
+          "time_control_statuses": [
+            0
+          ],
+          "gpu_global_range_percent": [
+            0,
+            53
+          ],
+          "gpu_global_mean_percent": 19.6,
+          "windowserver_cpu_percent_one_core": 52.8983,
+          "all_vtdecoder_rss_mean_mib_not_attributed": 272.3156
+        },
+        {
+          "index": 3,
+          "phase": "idle",
+          "retained_samples": 4,
+          "retained_system_samples": 1,
+          "cpu_percent_one_core": 0.0634,
+          "cpu_interval_seconds": 3.5,
+          "footprint_mean_mib": 14.6688,
+          "footprint_peak_mib": 14.7977,
+          "rss_mean_mib": 69.6602,
+          "visible_samples": 0,
+          "ready_samples": 0,
+          "rate_min": 0,
+          "rate_max": 0,
+          "loop_count_max": 0,
+          "time_control_statuses": [
+            -1
+          ],
+          "gpu_global_range_percent": [
+            38,
+            38
+          ],
+          "gpu_global_mean_percent": 38,
+          "all_vtdecoder_rss_mean_mib_not_attributed": 252.5312
+        }
+      ]
+    },
+    {
+      "run": "720p24",
+      "finish_reason": "schedule_complete",
+      "errors": [],
+      "measurement_errors": [],
+      "phases": [
+        {
+          "index": 0,
+          "phase": "idle",
+          "retained_samples": 5,
+          "retained_system_samples": 1,
+          "cpu_percent_one_core": 0.0577,
+          "cpu_interval_seconds": 4.25,
+          "footprint_mean_mib": 7.6539,
+          "footprint_peak_mib": 7.657,
+          "rss_mean_mib": 54.2781,
+          "visible_samples": 0,
+          "ready_samples": 0,
+          "rate_min": 0,
+          "rate_max": 0,
+          "loop_count_max": 0,
+          "time_control_statuses": [
+            -1
+          ],
+          "gpu_global_range_percent": [
+            39,
+            39
+          ],
+          "gpu_global_mean_percent": 39,
+          "all_vtdecoder_rss_mean_mib_not_attributed": 205.8594
+        },
+        {
+          "index": 1,
+          "phase": "play",
+          "retained_samples": 17,
+          "retained_system_samples": 9,
+          "cpu_percent_one_core": 1.314,
+          "cpu_interval_seconds": 18.7494,
+          "footprint_mean_mib": 15.2849,
+          "footprint_peak_mib": 15.5634,
+          "rss_mean_mib": 68.5358,
+          "visible_samples": 15,
+          "ready_samples": 17,
+          "rate_min": 1,
+          "rate_max": 1,
+          "loop_count_max": 5,
+          "time_control_statuses": [
+            2
+          ],
+          "gpu_global_range_percent": [
+            30,
+            56
+          ],
+          "gpu_global_mean_percent": 40.5556,
+          "windowserver_cpu_percent_one_core": 44.5069,
+          "all_vtdecoder_rss_mean_mib_not_attributed": 233.1441
+        },
+        {
+          "index": 2,
+          "phase": "pause",
+          "retained_samples": 10,
+          "retained_system_samples": 4,
+          "cpu_percent_one_core": 0.0503,
+          "cpu_interval_seconds": 10.0,
+          "footprint_mean_mib": 15.0509,
+          "footprint_peak_mib": 15.2977,
+          "rss_mean_mib": 68.4156,
+          "visible_samples": 10,
+          "ready_samples": 10,
+          "rate_min": 0,
+          "rate_max": 0,
+          "loop_count_max": 6,
+          "time_control_statuses": [
+            0
+          ],
+          "gpu_global_range_percent": [
+            45,
+            51
+          ],
+          "gpu_global_mean_percent": 47.5,
+          "windowserver_cpu_percent_one_core": 39.2784,
+          "all_vtdecoder_rss_mean_mib_not_attributed": 234.043
+        },
+        {
+          "index": 3,
+          "phase": "idle",
+          "retained_samples": 4,
+          "retained_system_samples": 1,
+          "cpu_percent_one_core": 0.06,
+          "cpu_interval_seconds": 3.25,
+          "footprint_mean_mib": 14.3993,
+          "footprint_peak_mib": 14.5634,
+          "rss_mean_mib": 67.8164,
+          "visible_samples": 0,
+          "ready_samples": 0,
+          "rate_min": 0,
+          "rate_max": 0,
+          "loop_count_max": 0,
+          "time_control_statuses": [
+            -1
+          ],
+          "gpu_global_range_percent": [
+            49,
+            49
+          ],
+          "gpu_global_mean_percent": 49,
+          "all_vtdecoder_rss_mean_mib_not_attributed": 224.4688
+        }
+      ]
+    }
+  ]
+}

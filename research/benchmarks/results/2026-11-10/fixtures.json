@@ -1,0 +1,152 @@
+[
+  {
+    "name": "720p24",
+    "file": "$FIXTURE_DIR/720p24.mp4",
+    "sha256": "6a95243b85e5836d66fc7ea622c2ec06f735096344b129dca02462442fddd9cd",
+    "command": [
+      "ffmpeg",
+      "-hide_banner",
+      "-loglevel",
+      "error",
+      "-n",
+      "-f",
+      "lavfi",
+      "-i",
+      "testsrc2=size=1280x720:rate=24",
+      "-t",
+      "4",
+      "-an",
+      "-c:v",
+      "libx264",
+      "-threads",
+      "4",
+      "-preset",
+      "fast",
+      "-crf",
+      "20",
+      "-pix_fmt",
+      "yuv420p",
+      "-movflags",
+      "+faststart",
+      "$FIXTURE_DIR/720p24.mp4"
+    ],
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "h264",
+          "width": 1280,
+          "height": 720,
+          "pix_fmt": "yuv420p",
+          "r_frame_rate": "24/1",
+          "nb_read_frames": "96"
+        }
+      ],
+      "format": {
+        "duration": "4.000000",
+        "size": "1699372"
+      }
+    }
+  },
+  {
+    "name": "1080p24",
+    "file": "$FIXTURE_DIR/1080p24.mp4",
+    "sha256": "d0a373029b7b0887c667fd10f451a67dddcc9b6b9aeb4b38568fe190a5d3a0ea",
+    "command": [
+      "ffmpeg",
+      "-hide_banner",
+      "-loglevel",
+      "error",
+      "-n",
+      "-f",
+      "lavfi",
+      "-i",
+      "testsrc2=size=1920x1080:rate=24",
+      "-t",
+      "4",
+      "-an",
+      "-c:v",
+      "libx264",
+      "-threads",
+      "4",
+      "-preset",
+      "fast",
+      "-crf",
+      "20",
+      "-pix_fmt",
+      "yuv420p",
+      "-movflags",
+      "+faststart",
+      "$FIXTURE_DIR/1080p24.mp4"
+    ],
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "h264",
+          "width": 1920,
+          "height": 1080,
+          "pix_fmt": "yuv420p",
+          "r_frame_rate": "24/1",
+          "nb_read_frames": "96"
+        }
+      ],
+      "format": {
+        "duration": "4.000000",
+        "size": "3578825"
+      }
+    }
+  },
+  {
+    "name": "1080p30",
+    "file": "$FIXTURE_DIR/1080p30.mp4",
+    "sha256": "8e7d1e67fe8f263d60c763a8d5d257cea26d8e3ff201b7969c9e30cce2b97b2e",
+    "command": [
+      "ffmpeg",
+      "-hide_banner",
+      "-loglevel",
+      "error",
+      "-n",
+      "-f",
+      "lavfi",
+      "-i",
+      "testsrc2=size=1920x1080:rate=30",
+      "-t",
+      "4",
+      "-an",
+      "-c:v",
+      "libx264",
+      "-threads",
+      "4",
+      "-preset",
+      "fast",
+      "-crf",
+      "20",
+      "-pix_fmt",
+      "yuv420p",
+      "-movflags",
+      "+faststart",
+      "$FIXTURE_DIR/1080p30.mp4"
+    ],
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "h264",
+          "width": 1920,
+          "height": 1080,
+          "pix_fmt": "yuv420p",
+          "r_frame_rate": "30/1",
+          "nb_read_frames": "120"
+        }
+      ],
+      "format": {
+        "duration": "4.000000",
+        "size": "4063314"
+      }
+    }
+  }
+]

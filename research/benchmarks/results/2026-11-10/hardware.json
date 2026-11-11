@@ -1,0 +1,18 @@
+{
+  "chip": "Apple M5 Max",
+  "memory_bytes": 68719476736,
+  "logical_cpus": 18,
+  "gpu_cores": 40,
+  "macos": "27.2.1",
+  "display": {
+    "pixel_width": 3472,
+    "pixel_height": 2266,
+    "logical_width": 1736,
+    "logical_height": 1133,
+    "refresh_rate_hz": 120,
+    "count": 1
+  },
+  "ffmpeg": "9.0.2",
+  "source": "sysctl/system_profiler/ffmpeg read-only queries",
+  "notes": "Background GPU utilization observed 38-55 percent before testing; other applications were left running."
+}

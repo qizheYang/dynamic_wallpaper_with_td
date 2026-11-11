@@ -1,0 +1,22 @@
+{
+  "command": [
+    "$PROJECT_ROOT/research/benchmarks/build/WallpaperProbe",
+    "--video",
+    "$FIXTURE_DIR/1080p24.mp4",
+    "--output",
+    "$PROJECT_ROOT/research/benchmarks/results/2026-11-10/1080p24/probe.jsonl",
+    "--schedule",
+    "idle:10,play:25,pause:15,idle:10"
+  ],
+  "probe_sha256": "0505fccf7289979ba54780d2e9e06de5b0259891d90a076311f90d842d376dc2",
+  "video_sha256": "d0a373029b7b0887c667fd10f451a67dddcc9b6b9aeb4b38568fe190a5d3a0ea",
+  "sample_interval_seconds": 2,
+  "notes": [
+    "GPU counters are global, driver-specific snapshots, not power.",
+    "VTDecoder processes are system-wide; ownership is not attributed.",
+    "CPU uses deltas of cumulative process CPU time, 100%=one core.",
+    "RSS is not physical footprint; shared memory may be double-counted."
+  ],
+  "probe_exit_code": 0,
+  "wall_seconds": 62.13281258400093
+}

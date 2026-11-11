@@ -1,0 +1,22 @@
+{
+  "command": [
+    "$PROJECT_ROOT/research/benchmarks/build/WallpaperProbe",
+    "--video",
+    "$FIXTURE_DIR/720p24.mp4",
+    "--output",
+    "$PROJECT_ROOT/research/benchmarks/results/2026-11-10/720p24/probe.jsonl",
+    "--schedule",
+    "idle:10,play:25,pause:15,idle:10"
+  ],
+  "sample_interval_seconds": 2,
+  "notes": [
+    "GPU counters are global, driver-specific snapshots, not power.",
+    "VTDecoder processes are system-wide; ownership is not attributed.",
+    "CPU uses deltas of cumulative process CPU time, 100%=one core.",
+    "RSS is not physical footprint; shared memory may be double-counted.",
+    "First pilot screen pixel_width/pixel_height fields came from CGDisplayPixelsWide/High and reported logical1736x1133. Authoritative native panel is3472x2266 in hardware.json. Subsequent probe revisions correct only display metadata to CGDisplayMode.pixelWidth/pixelHeight."
+  ],
+  "probe_exit_code": 0,
+  "wall_seconds": 60.093376374999934,
+  "probe_sha256": "ae82069a3b5df68a86906b15f05bfd7cc0df4c0c883d6a49c39acdf041af3da4"
+}
