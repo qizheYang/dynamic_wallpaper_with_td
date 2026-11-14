@@ -140,7 +140,7 @@ See [the complete plan](plan/README.md) for each milestone's deliverables, exit 
 
 Read [AGENTS.md](AGENTS.md) and the latest reports under [agents_shared](agents_shared/README.md) before taking over work. Review the planned milestone before implementation, record findings and their resolution, and report at meaningful checkpoints. Reports use the literal filename form `[agent_name][YYYY-MM-DD_HH-mm-ss±HHMM].md`; this assistant uses `gpt6astra`.
 
-Claude's independent plan review is expected but has not been performed by this assistant. The handoff should focus on measurement validity, aggregate resource accounting, pause-state correctness, lock/sleep assumptions, TD reproducibility, and scope. Review reports must identify what was actually examined and tested.
+The initial `gpt6astra` review is complete; two findings about WindowServer memory acceptance and early lock-signal validation were corrected and rechecked. Claude's independent plan review is expected but has not been performed by this assistant. The handoff should focus on measurement validity, aggregate resource accounting, pause-state correctness, lock/sleep assumptions, TD reproducibility, and scope. Review reports must identify what was actually examined and tested.
 
 ## Licensing and provenance
 

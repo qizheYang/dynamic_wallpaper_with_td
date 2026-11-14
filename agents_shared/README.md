@@ -32,3 +32,8 @@ Reports may use English or Chinese, but should remain concise and understandable
 ## Current review state
 
 The research and pilot measurements are documented. The implementation plan has been reviewed by `gpt6astra`; two findings were corrected and independently rechecked. The timestamped reports record the review and publication checkpoints. Independent Claude review remains pending until Claude's own report is added. Product implementation has not started.
+
+## Reports
+
+- [Plan review and publication preparation](%5Bgpt6astra%5D%5B2026-11-10_18-44-12-0800%5D.md)
+- [Public repository verification and handoff](%5Bgpt6astra%5D%5B2026-11-13_17-53-56-0800%5D.md)

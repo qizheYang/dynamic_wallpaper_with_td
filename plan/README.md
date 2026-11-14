@@ -1,6 +1,6 @@
 # Implementation plan
 
-Status: **draft for user review; independent gpt6astra review completed and its two P2 findings resolved; Claude review pending**. Updated 2026-11-10.
+Status: **published for user review; independent gpt6astra review completed and its two P2 findings resolved; Claude review pending**. Updated 2026-11-13.
 
 This plan turns the research into an implementation sequence. The current deliverable is the public research repository and this reviewable plan. Product implementation has not started. The existing Swift program is a disposable measurement probe, not the wallpaper application.
 
@@ -77,7 +77,7 @@ An external player can remain an optional dependency; reuse does not automatical
 
 ### M0 — Research and review package
 
-**Status:** research and four pilot runs complete; independent gpt6astra review completed with its two P2 findings resolved. Repository publication remains in progress; user and Claude reviews remain pending.
+**Status:** research and four pilot runs complete; independent gpt6astra review completed with its two P2 findings resolved. The public repository has been created, pushed, and verified; user and Claude reviews remain pending. See the [shared checkpoint reports](../agents_shared/README.md).
 
 Deliver a clear root README, this plan, source citations, benchmark source, sanitized results, and milestone reporting conventions under `agents_shared/`. Preserve the limitations of the original measurements. Exclude compiled executables, caches, personal paths, credentials, and unlicensed media from publication.
 
