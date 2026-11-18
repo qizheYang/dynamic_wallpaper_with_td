@@ -9,8 +9,9 @@
 | [03 · 建议实施路线](03-proposed-pipeline.md) | 架构图、任务 JSON、状态机、FFmpeg 命令、本机检查与分阶段验收 |
 | [04 · 现有程序源码核验](04-existing-apps-performance.md) | LiveDesk、Aerial、Mural 的固定提交；降帧率、遮挡、缓存和资源释放的实际实现 |
 | [05 · 低资源可行性与实测](05-performance-feasibility.md) | 四组本机原生播放实验、CPU/内存数据、系统 GPU 的测量限制，以及性能门槛 |
+| [06 · Agent、实时数据与功能对标](06-interactive-agent-platform.md) | Wallpaper Engine 功能范围、TouchEngine／TD 运行时边界、agent API、天气数据与配置 |
 
-建议路线仍是 **TD 参数化模板 → PNG 帧序列 → FFmpeg 编码 → macOS 视频播放**。当前以低 CPU、GPU、内存为首要约束：先验收单屏原生播放和不可见时暂停，再接入 TD 的参数化作品。默认从 720p/1080p、24 fps、无音频开始；早期文档中的 30 fps 示例用于验证导出计数，不是默认播放档位。
+首个低资源模式仍是 **TD 参数化模板 → PNG 帧序列 → FFmpeg 编码 → macOS 视频播放**。用户于 2026-11-17 增加 App 内 agent、手动 TD 模板、实时 API 和 Wallpaper Engine 功能对标目标；[扩展设计](../plan/agent-platform.md) 将它们分成数据层与可选实时后端，不能全部压进 MP4。首档仍为 720p24、无音频；早期文档中的其他帧率不是默认档位。
 
 两条替代路线也值得保留：只需要日夜变化时导出动态 HEIC；需要系统壁纸选择器和锁屏衔接时，单独验证 Aerial 等原生壁纸扩展。目前这些扩展依赖私有接口，不能当作公开稳定的系统 SDK。[Aerial 技术说明](https://github.com/AerialScreensaver/Aerial/blob/main/README.md)
 
