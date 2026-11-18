@@ -2,9 +2,11 @@
 
 ## Goal and current stage
 
-Build a low-overhead macOS dynamic-wallpaper workflow using offline TouchDesigner generation and measured native playback. Memory, CPU, GPU, and power behavior are acceptance criteria. Read `README.md`, `plan/README.md`, and `research/05-performance-feasibility.md` before substantive work.
+Deliver a macOS wallpaper app with TD-independent default playback, on-demand agent API creation, editable TD templates, and data/interactive effects, plus a shared authoring skill. Preserve offline generation as the first low-resource mode; optional live backends declare dependencies. Read `README.md`, `plan/README.md`, `plan/agent-platform.md`, and relevant performance evidence before substantive work. Memory, CPU, GPU, and power behavior remain acceptance criteria.
 
-This checkpoint prepares a public research repository and a reviewed implementation plan. The existing Swift program is a measurement probe. Product implementation is not part of the current publication request. Claude's independent review is pending until a real review is recorded; follow the user's next implementation instruction without inventing repeated permission gates.
+For wallpaper requirements, authoring, or export tasks, read the project [td-wallpaper skill](skills/td-wallpaper/SKILL.md). Its canonical source lives in this repository; it does not imply global installation or an available TD connection. Reuse known user choices and ask only for missing inputs that materially change the requested wallpaper.
+
+The existing Swift program is a measurement probe. Read `agents_shared/README.md` for authoritative live status, current assignments, and review dispositions; other entry points link there instead of repeating approval states. The user delegated review decisions and requested Claude to begin the scoped implementation in `plan/claude-implementation-prompt.md`. Do not treat superseded questions in an old report as new permission gates.
 
 ## Before implementation
 
@@ -12,6 +14,8 @@ This checkpoint prepares a public research repository and a reviewed implementat
 - Review scope, dependencies, assumptions, resource budgets, and failure/recovery paths before editing product code. Record important findings and their disposition.
 - Keep completed observations, hypotheses, proposed budgets, and unrun tests distinct. A low player CPU number is not evidence of low total GPU, helper memory, or power use.
 - Honor the selected playback profile and architecture decision. Avoid adding private APIs, web runtimes, persistent system changes, or real-time TD work without a task-specific reason and review.
+- The expanded user scope authorizes design and staged implementation of agent/data/live capabilities; it does not make any backend tested or installed. Preserve current file ownership. Use explicit new contracts rather than inserting arbitrary fields into strict video jobs. Keep model credentials, data credentials and public asset packages separate; read `.env.example`, not unrelated secret files.
+- Keep TD cooking/rendering and video encoding separate in time from controlled playback measurements. Inspect the current TD project before edits; never alter an unrelated or unsaved project. Complete independent disk work when a connection or project switch is unavailable.
 - Preserve unrelated user changes. Coordinate file ownership with other agents; do not overwrite another agent's work.
 
 ## Milestone reporting

@@ -35,9 +35,9 @@ flowchart LR
 | TD 许可证 | 尚未读取或核实 | 原型先按 Non-Commercial 的 1280×1280 上限规划；商业用途另核许可证 |
 | FFmpeg / ffprobe | 均为 `9.0.2`，可从当前 PATH 调用 | 可在 TD 外编码和检查产物 |
 | 编码器清单 | 包含 `libx264`、`h264_videotoolbox`、`hevc_videotoolbox`、ProRes、PNG | 只验证了下面的 `libx264` 样例，硬件编码尚未运行验证 |
-| TD 自动化连接 | 本次会话未发现可调用的 TD 专用连接工具 | 方案使用工程内 Python/DAT 与磁盘文件，不依赖某个特定 MCP 服务 |
+| TD 自动化连接 | 初次研究会话未发现连接；Claude 后续报告曾连接 TD MCP，但审阅时 TD 未运行、连接失败 | M3 重新检查当前可用性与专用工程；磁盘管线不依赖 MCP，连接失败时继续独立代码 |
 
-本次未启动或修改 TD 工程、切换系统壁纸、安装软件、修改登录项。TD 许可证状态与运行中的节点状态尚未验证。
+初次环境检查未启动或修改 TD 工程、切换系统壁纸、安装软件、修改登录项。后续连接信息来自 Claude 审阅，不等于许可证或当前节点状态已验证；只允许修改该仓库专用工程。
 
 ## 3. 任务契约与目录约定
 
@@ -80,6 +80,8 @@ flowchart LR
 
 ## 5. 可复用的编码与检查命令
 
+2026-11-17 审阅修订：以下候选命令要求输入是 full-range RGB、Rec.709 primaries，且像素数值已经按 BT.709 transfer 编码。它不是任意 TD PNG 的通用转换器。先验证 TD 实际输出；sRGB、线性或 ACES 输入需要明确的传递函数/色域转换，不能只补写标签。
+
 以下从项目根目录执行。假设源目录已包含且仅包含连续的 `frame_000001.png` 到 `frame_000600.png`，尺寸一致、宽高为偶数。**编码前先检查序列数量与连续性**；`-frames:v 600` 只是输出上限，不能代替源序列校验。
 
 ```sh
@@ -87,6 +89,7 @@ ffmpeg -hide_banner -n \
   -framerate 30 -start_number 1 \
   -i 'renders/gradient_seed42_720p_30fps/frames/frame_%06d.png' \
   -frames:v 600 -an \
+  -vf 'scale=in_range=pc:out_range=tv:out_color_matrix=bt709,format=yuv420p,setparams=colorspace=bt709:color_primaries=bt709:color_trc=bt709:range=tv' \
   -c:v libx264 -preset medium -crf 18 -pix_fmt yuv420p \
   -movflags +faststart \
   'renders/gradient_seed42_720p_30fps/loop.partial.mp4'
@@ -96,7 +99,7 @@ ffmpeg -hide_banner -n \
 
 ```sh
 ffprobe -v error -count_frames \
-  -show_entries 'stream=codec_type,codec_name,width,height,pix_fmt,r_frame_rate,avg_frame_rate,nb_read_frames:format=duration' \
+  -show_entries 'stream=codec_type,codec_name,width,height,pix_fmt,r_frame_rate,avg_frame_rate,nb_read_frames,color_space,color_primaries,color_transfer,color_range:format=duration' \
   -of json 'renders/gradient_seed42_720p_30fps/loop.partial.mp4'
 
 ffmpeg -v error -xerror \
@@ -104,17 +107,21 @@ ffmpeg -v error -xerror \
   -f null -
 ```
 
-预期是一条 H.264 视频流、无音频，`1280×720`、`yuv420p`、30 fps、600 个解码帧、约 20 秒，并且全片解码无错误。`nb_read_frames` 比仅相信容器声明的帧数更有用；它仍不能证明每帧内容都不重复，或证明画面无接缝。[ffprobe 文档](https://ffmpeg.org/ffprobe.html)
+预期是一条 H.264 视频流、无音频，`1280×720`、`yuv420p`、30 fps、600 个解码帧、约 20 秒，并且全片解码无错误；`color_space` / `color_primaries` / `color_transfer` 为 `bt709`，`color_range` 为 `tv`。`nb_read_frames` 比仅相信容器声明的帧数更有用；它仍不能证明每帧内容都不重复，或证明画面无接缝。[ffprobe 文档](https://ffmpeg.org/ffprobe.html)
 
 全部验收通过后，才在同一目录把 `loop.partial.mp4` 重命名为 `loop.mp4`，并发布成功状态。失败时保留临时文件供排查；重试使用新的任务目录，避免覆盖或误发布旧产物。
 
-**色彩边界：**上面的命令用于验证帧序列到 MP4 的流程，尚未定义完整交付色彩方案。正式导出要明确 TD 工作空间、输出传递函数、RGB→YUV 矩阵及 full/limited range，在 TD、QuickTime 和实际壁纸窗口中对照测试图。线性 EXR/ACES 不能直接按普通 SDR PNG 处理；只补写 BT.709 标签也不等于做了颜色转换。最终选定 SDR Rec.709 流程后再固定转换和元数据参数。[FFmpeg 色彩转换文档](https://ffmpeg.org/ffmpeg-filters.html#colorspace)
+**色彩边界：**这里的 `scale` 做 RGB→YUV 矩阵及范围转换，`setparams` 标记帧属性，并不执行 sRGB/线性→BT.709 transfer 转换。源传递函数未知时应拒绝最终发布。标签正确也不证明画面正确，M3 还必须用实际 TD 输出与 AVPlayerLayer 色卡对照完成端到端验证。[scale 文档](https://ffmpeg.org/ffmpeg-filters.html#scale)、[setparams 文档](https://ffmpeg.org/ffmpeg-filters.html#setparams)
 
 ### 本次实际验证
 
-已在临时目录生成 60 张 `320×180` 的合成 PNG，按上述编码参数生成 30 fps MP4，并用同样的探测/解码方式检查：H.264、`yuv420p`、60 帧、2.000000 秒、无音频，全片解码退出码 0。临时文件已清理。
+2026-11-10 曾在临时目录生成 60 张 `320×180` 的合成 PNG，按当时尚未指定色彩矩阵的编码命令生成 30 fps MP4，并用同样的探测/解码方式检查：H.264、`yuv420p`、60 帧、2.000000 秒、无音频，全片解码退出码 0。临时文件已清理。
 
 这次编码实验只证明本机的 FFmpeg 命令路径和小样本编码可用；未验证 TD 逐帧导出、20 秒真实场景、色彩一致性或无缝循环。后续 AVFoundation 短时播放与遮挡实验见 [性能可行性报告](05-performance-feasibility.md)，不能用该结果代替 TD 真实场景或完整桌面生命周期验收。
+
+### 2026-11-17 色彩问题复核
+
+本机 FFmpeg 9.0.2/libx264 的独立合成测试复现了问题：64×64 纯红 RGB PNG 经原命令解码为 Y/U/V `81/90/240`，四项色彩标签均缺失；显式候选命令得到 `63/102/240` 且四项标签完整。六色块测试及 H.264 位流字段也已检查。这里没有运行 TD 或 AVPlayer，不能推断它们的实际输入/未标记视频解读方式。完整命令、输入假设、数值及复核边界见 [色彩检查记录](benchmarks/color_checks/README.md)。
 
 ## 6. 分阶段验证与验收
 
@@ -129,4 +136,4 @@ ffmpeg -v error -xerror \
 
 先比较静态桌面、播放器暂停、720p30 和更高分辨率的相同场景，记录 CPU、WindowServer、内存与能耗趋势；已有短时探针结果仍不足以支持“系统整体开销低”或“耗电很低”的承诺。首版不需要实时运行 TD；只有确定需要音频响应、鼠标互动或持续外部数据时，再研究实时输出路径。
 
-本节保留初期 30 fps 示例；当前首版范围和 720p24 默认配置以 [实施计划](../plan/README.md) 为准。下一次实施应先解决性能验证中仍不足的系统总开销与长期内存证据，再按 A 确认许可证和 TD 参数、制作确定性循环。复用现有播放器或开发自己的应用，都使用同一套资源预算和暂停／恢复验收，不能仅凭“原生”或“硬件解码”选择。
+本节保留初期 30 fps 示例；当前首版范围和 720p24 默认配置以 [实施计划](../plan/README.md) 为准。M1 测量工具与 M3 确定性导出可以并行开发，但同机采样与渲染必须错开；正式播放方案和发布仍需整体资源与长期内存证据。复用现有播放器或开发自己的应用，都使用同一套资源预算和暂停／恢复验收，不能仅凭“原生”或“硬件解码”选择。

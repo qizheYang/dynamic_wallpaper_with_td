@@ -1,10 +1,12 @@
 # Dynamic Wallpaper with TouchDesigner
 
-Research and tooling for low-overhead macOS dynamic wallpapers: TouchDesigner video generation, native playback, and reproducible performance benchmarks.
+Build a low-overhead macOS wallpaper app with agent-assisted creation, editable TouchDesigner templates, and data-driven effects, plus a shared Claude/Codex authoring skill.
 
-The project aims to turn procedural TouchDesigner artwork into repeatable, seamless video loops that can run as a macOS desktop background without keeping TouchDesigner open. Memory, CPU, GPU, and power costs are design constraints and release criteria.
+The first playback path turns procedural TouchDesigner artwork into repeatable video loops that run without TD. The expanded product also targets live visual properties, user-selected APIs, and optional real-time renderers. Memory, CPU, GPU, and power costs remain design constraints and release criteria for each mode.
 
-**Current stage: research, measurement prototypes, and implementation planning.** There is no finished wallpaper application or automated TD template yet. The native playback probe works, but whole-system performance has not passed the proposed acceptance gate. Product implementation follows review of the [complete plan](plan/README.md); independent Claude review is pending.
+The final deliverables are **a wallpaper app whose default playback starts and runs with TouchDesigner closed**, and **an agent skill that turns a user's requirements into verified wallpapers**. Inside the app, users should be able to connect a model provider, generate artwork through the skill, open an editable TD template on request, and bind effects to weather or custom APIs. Optional TD live modes declare their runtime/license dependencies. The [expanded platform plan](plan/agent-platform.md) and [feature feasibility research](research/06-interactive-agent-platform.md) distinguish these targets from implemented code. Research, probes, and synthetic fixtures are intermediate deliverables.
+
+**Current status and review decisions:** see [the shared project status](agents_shared/README.md#current-review-state). This README describes the intended system and the evidence below; it does not substitute for performance acceptance. The [complete plan](plan/README.md) and [Claude implementation prompt](plan/claude-implementation-prompt.md) define the coding handoff.
 
 ## What we are going to build
 
@@ -13,12 +15,16 @@ The project aims to turn procedural TouchDesigner artwork into repeatable, seaml
 - A lightweight macOS playback solution, selected by comparing an existing application with a minimal native reference under the same tests.
 - Reliable pause, static fallback, resource release, and recovery when animation is unnecessary or restricted by power/session policy.
 - Reproducible measurements that include the player, relevant helpers, WindowServer, and the system GPU—not just the application's headline CPU number.
+- A versioned skill for Claude/Codex that reuses known user preferences, clarifies missing creative requirements, and guides the complete authoring-to-app workflow.
+- On-demand agent creation with user-supplied provider credentials, bounded local tools, and editable TD templates.
+- Data connectors and visual-property bindings, starting with a [Los Angeles weather design example](examples/weather-los-angeles/README.md).
+- A staged Wallpaper Engine feature matrix for scenes, Web, audio/mouse input, multiple screens and playlists; Workshop/project compatibility is a separate investigation.
 
-The initial profile is one screen, 1280×720 at 24 fps, SDR, H.264, and no audio. A 1920×1080 profile is conditional on the TD license and measured playback cost. Slow-moving artwork may also get a 15 fps rendition. Higher resolutions, multiple animated displays, HDR, real-time interaction, and private native wallpaper extensions are later decisions.
+The initial profile is one screen, 1280×720 at 24 fps, SDR, H.264, and no audio. A 1920×1080 profile is conditional on the TD license and measured playback cost. Slow-moving artwork may also get a 15 fps rendition. Live interaction, data bindings and multiple screens are later planned increments, with independent renderer/dependency/resource validation. HDR and private native wallpaper extensions remain separate decisions.
 
 ## Why separate generation from playback?
 
-TouchDesigner is the authoring and offline rendering environment. A finished video lets ordinary playback avoid recalculating the original procedural scene or running the editor, render controller, and encoder continuously.
+TouchDesigner is the authoring and offline rendering environment for the first mode. A finished video lets ordinary playback avoid recalculating the procedural scene or running production tools continuously. The diagram below describes that mode; the expanded plan adds an on-demand agent coordinator, a data broker, and optional live renderers. Ordinary weather refreshes update data/properties without repeatedly calling a model or exporting a new movie.
 
 ```mermaid
 flowchart LR
@@ -38,9 +44,10 @@ The playback implementation remains a decision to make after controlled measurem
 |---|---|---|
 | Wallpaper mechanisms | Apple documentation; desktop-window, dynamic HEIC, and private provider alternatives | Researched |
 | Existing applications | Pinned source review of LiveDesk, Aerial, and Mural | Source-reviewed; those applications were not locally benchmarked |
-| Native playback | Four approximately 60-second AppKit/AVFoundation probe runs | Playback, looping, pause, and one-screen occlusion recovery observed |
-| Encoding tooling | FFmpeg image-sequence encode and full decode checks | Small synthetic fixture validated |
-| TD automation | Official API, export, timing, and license research | No TD template built or rendered yet |
+| Native playback | Four approximately 60-second pilots; a new 30-second schema-2 harness smoke | Playback, looping, pause, and one-screen occlusion recovery observed; controlled acceptance pending |
+| Encoding tooling | Job/sequence validation, FFmpeg encoding, bundle publication, regression tests | Synthetic 720p24 bundle reproduced; cancellation and source-color validation hardened |
+| Measurement tooling | Bounded sustained mode, process identity checks, non-root footprint sampling, phase-aligned summaries | 90 tests passed at the M1 checkpoint; later TD report records 93 tests. Sampler overhead and controlled baselines pending |
+| TD automation | Batch TD runner, generated template `.toe`, chart/index checks, two real 720p24 480-frame exports | Byte-identical frames and video across two exports; all bundle checks pass. AVPlayer color/loop review pending |
 | Whole-system resource budgets | Noisy GPU baseline; helper-memory attribution incomplete | **Not accepted** |
 | Long-term stability and complete desktop lifecycle | Sustained runs, actual lock/sleep, Spaces, and display changes | Pending |
 
@@ -52,7 +59,7 @@ See the [performance report](research/05-performance-feasibility.md) for methodo
 
 The proposed defaults are:
 
-1. Generate and transcode offline; close TD during ordinary playback.
+1. Generate and transcode offline for video modes; close TD during ordinary playback. Optional live modes expose and measure their additional runtime costs.
 2. Encode genuine low-frame-rate renditions at normal playback speed.
 3. Pause when the selected desktop is fully occluded; add approximate coverage rules only if their benefit justifies the monitoring cost.
 4. Use a static state on battery and in Low Power Mode; handle thermal, sleep, and session conditions as independent pause reasons.
@@ -69,14 +76,24 @@ Initial proposed budgets include a whole-playback CPU increment of at most 5 per
 ├── AGENTS.md                 Shared workflow and milestone reporting rules
 ├── CLAUDE.md                 Entry point for Claude's review and collaboration
 ├── plan/
-│   └── README.md             Milestones, architecture decisions, risks, acceptance
+│   ├── README.md             Milestones, architecture decisions, risks, acceptance
+│   ├── agent-platform.md     Agent APIs, templates, data sources, live renderers
+│   └── claude-implementation-prompt.md
+├── examples/                 Proposed integration/configuration examples
+├── jobs/                     Versioned job schema and example
+├── pipeline/                 Sequence validation, encode, bundle publication
+├── td/                       Shader/controller sources and TD build guide
+├── tests/                    Pipeline and measurement regression checks
+├── skills/td-wallpaper/      Shared agent skill and authoring guidance
 ├── research/
 │   ├── README.md             Research index
-│   ├── 01-...md … 05-...md   Mechanisms, TD automation, sources, measurements
+│   ├── 01-...md … 06-...md   Mechanisms, TD automation, measurements, live platform
 │   └── benchmarks/
 │       ├── WallpaperProbe.swift
 │       ├── measure.py
+│       ├── system_metrics.py
 │       ├── summarize.py
+│       ├── summarize_v2.py
 │       ├── sanitize_results.py
 │       ├── results/          Reviewed, sanitized public evidence
 │       └── results_private/  Local original/new runs; ignored by Git
@@ -85,7 +102,7 @@ Initial proposed budgets include a whole-playback CPU increment of at most 5 per
     └── [agent][date-time].md  Append-only milestone/review reports
 ```
 
-Build outputs, fixture movies, credentials, caches, and private measurements are excluded from version control. Public measurement copies preserve numerical observations while normalizing local paths, process identifiers, and wall-clock metadata; see [data-publication notes](research/benchmarks/results/2026-11-10/SANITIZATION.md).
+Build outputs, fixture movies, credentials, caches, and private measurements are excluded from version control. Public measurement copies preserve numerical observations while normalizing local paths, process identifiers, and wall-clock metadata; see the [original data-publication notes](research/benchmarks/results/2026-11-10/SANITIZATION.md) and [schema-2 smoke notes](research/benchmarks/results/m1-2026-11-17/SANITIZATION.md). See the [pipeline guide](pipeline/README.md), [job contract](jobs/README.md), and [TD build guide](td/README.md) for asset production.
 
 ## Explore and reproduce the research
 
@@ -119,7 +136,7 @@ python3 research/benchmarks/summarize.py \
 
 The measurement command opens a temporary click-through desktop-level window, runs for approximately 60 seconds, cleans up, and exits. It retains the existing system wallpaper configuration. Choose a new output directory for a repeat run; the tool refuses to overwrite a run. The source fixture is not a finished artistic loop or a complete color-management example.
 
-Read [the benchmark guide](research/benchmarks/README.md) before interpreting output. In particular, at-least-partial visibility is not full-desktop visibility, process RSS is not total memory, and global GPU utilization is not attributable process GPU usage. The current bounded probe is for short experiments; the longer controlled protocol is a planned harness improvement.
+Read [the benchmark guide](research/benchmarks/README.md) before interpreting output. In particular, at-least-partial visibility is not full-desktop visibility, process RSS is not total memory, and global GPU utilization is not attributable process GPU usage. The probe defaults to a 120-second cap; an explicit `--sustained` mode permits finite runs up to 3,600 seconds. The longer controlled protocol remains unrun.
 
 For TD work, the locally researched build is 2025.33230 and the actual license is not yet confirmed. Non-Commercial has resolution and usage restrictions; external encoding does not remove them. Consult [TD research](research/02-touchdesigner-video-automation.md) before choosing an export profile.
 
@@ -133,14 +150,16 @@ For TD work, the locally researched build is 2025.33230 and the actual license i
 | M3: TD asset production | One deterministic template, validated job pipeline, reproducible video bundle |
 | M4: Playback integration | Minimal host or existing-player integration with tested pause and recovery policies |
 | M5: Sustained validation | Long-run memory and lifecycle evidence, truthful compatibility and release notes |
+| M6: Agent workflow | Claude/Codex skill verified from user brief through real TD export and app playback |
+| M7–M10: Platform expansion | In-app agent creation, TD editing, API/data bindings, live effects and broader feature coverage |
 
-See [the complete plan](plan/README.md) for each milestone's deliverables, exit criteria, failure handling, and open questions. Product work does not start as part of this repository-publication task.
+See [the complete plan](plan/README.md) for deliverables, exit criteria, failure handling, and dependencies. M1 tooling and M3 asset code can be developed independently; GPU-heavy render/encode work and controlled playback measurements must use separate time slots.
 
 ## Review and agent collaboration
 
 Read [AGENTS.md](AGENTS.md) and the latest reports under [agents_shared](agents_shared/README.md) before taking over work. Review the planned milestone before implementation, record findings and their resolution, and report at meaningful checkpoints. Reports use the literal filename form `[agent_name][YYYY-MM-DD_HH-mm-ss±HHMM].md`; this assistant uses `gpt6astra`.
 
-The initial `gpt6astra` review is complete; two findings about WindowServer memory acceptance and early lock-signal validation were corrected and rechecked. Claude's independent plan review is expected but has not been performed by this assistant. The handoff should focus on measurement validity, aggregate resource accounting, pause-state correctness, lock/sleep assumptions, TD reproducibility, and scope. Review reports must identify what was actually examined and tested.
+Live review status, finding dispositions, and active ownership are maintained only in [the shared project status](agents_shared/README.md#current-review-state). Read each immutable review with its subsequent response. Reports must identify what was actually examined and tested; a completed review is not a completed runtime experiment.
 
 ## Licensing and provenance
 
