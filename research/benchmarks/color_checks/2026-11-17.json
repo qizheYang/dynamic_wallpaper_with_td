@@ -1,0 +1,463 @@
+{
+  "scratch": "$COLOR_CHECK_DIR",
+  "version": "ffmpeg version 9.0.2 Copyright (c) 2000-2026 the FFmpeg developers",
+  "input_contract": "Synthetic full-range 8-bit RGB PNG without ICC/gAMA/cICP. For candidate validation, sample values are asserted already BT.709-primary/BT.709-transfer-coded; no transfer conversion tested.",
+  "red_results": [
+    {
+      "name": "original",
+      "command": [
+        "ffmpeg",
+        "-hide_banner",
+        "-loglevel",
+        "error",
+        "-n",
+        "-framerate",
+        "30",
+        "-i",
+        "$COLOR_CHECK_DIR/red.png",
+        "-frames:v",
+        "1",
+        "-an",
+        "-c:v",
+        "libx264",
+        "-preset",
+        "medium",
+        "-crf",
+        "18",
+        "-pix_fmt",
+        "yuv420p",
+        "-movflags",
+        "+faststart",
+        "$COLOR_CHECK_DIR/original.mp4"
+      ],
+      "ffprobe_command": [
+        "ffprobe",
+        "-v",
+        "error",
+        "-select_streams",
+        "v:0",
+        "-show_entries",
+        "stream=codec_name,pix_fmt,color_range,color_space,color_transfer,color_primaries,width,height",
+        "-of",
+        "json",
+        "$COLOR_CHECK_DIR/original.mp4"
+      ],
+      "decode_command": [
+        "ffmpeg",
+        "-v",
+        "error",
+        "-i",
+        "$COLOR_CHECK_DIR/original.mp4",
+        "-frames:v",
+        "1",
+        "-pix_fmt",
+        "yuv420p",
+        "-f",
+        "rawvideo",
+        "-"
+      ],
+      "tags": {
+        "codec_name": "h264",
+        "width": 64,
+        "height": 64,
+        "pix_fmt": "yuv420p"
+      },
+      "yuv": [
+        81,
+        90,
+        240
+      ],
+      "sha256": "e3d3777e2203e16262d0edab0dec32adb6f8fbb37ef78773a97a1186b330fc44"
+    },
+    {
+      "name": "output_flags_only",
+      "command": [
+        "ffmpeg",
+        "-hide_banner",
+        "-loglevel",
+        "error",
+        "-n",
+        "-framerate",
+        "30",
+        "-i",
+        "$COLOR_CHECK_DIR/red.png",
+        "-frames:v",
+        "1",
+        "-an",
+        "-colorspace",
+        "bt709",
+        "-color_primaries",
+        "bt709",
+        "-color_trc",
+        "bt709",
+        "-color_range",
+        "tv",
+        "-c:v",
+        "libx264",
+        "-preset",
+        "medium",
+        "-crf",
+        "18",
+        "-pix_fmt",
+        "yuv420p",
+        "-movflags",
+        "+faststart",
+        "$COLOR_CHECK_DIR/output_flags_only.mp4"
+      ],
+      "ffprobe_command": [
+        "ffprobe",
+        "-v",
+        "error",
+        "-select_streams",
+        "v:0",
+        "-show_entries",
+        "stream=codec_name,pix_fmt,color_range,color_space,color_transfer,color_primaries,width,height",
+        "-of",
+        "json",
+        "$COLOR_CHECK_DIR/output_flags_only.mp4"
+      ],
+      "decode_command": [
+        "ffmpeg",
+        "-v",
+        "error",
+        "-i",
+        "$COLOR_CHECK_DIR/output_flags_only.mp4",
+        "-frames:v",
+        "1",
+        "-pix_fmt",
+        "yuv420p",
+        "-f",
+        "rawvideo",
+        "-"
+      ],
+      "tags": {
+        "codec_name": "h264",
+        "width": 64,
+        "height": 64,
+        "pix_fmt": "yuv420p",
+        "color_range": "tv",
+        "color_space": "bt709"
+      },
+      "yuv": [
+        63,
+        102,
+        240
+      ],
+      "sha256": "ff18c0222f162c7045cad59d0d2df9c52293dd453056d78807d4903226a262e4"
+    },
+    {
+      "name": "claude_filter",
+      "command": [
+        "ffmpeg",
+        "-hide_banner",
+        "-loglevel",
+        "error",
+        "-n",
+        "-framerate",
+        "30",
+        "-i",
+        "$COLOR_CHECK_DIR/red.png",
+        "-frames:v",
+        "1",
+        "-an",
+        "-vf",
+        "scale=out_color_matrix=bt709:out_range=tv,setparams=colorspace=bt709:color_primaries=bt709:color_trc=bt709:range=tv",
+        "-c:v",
+        "libx264",
+        "-preset",
+        "medium",
+        "-crf",
+        "18",
+        "-pix_fmt",
+        "yuv420p",
+        "-movflags",
+        "+faststart",
+        "$COLOR_CHECK_DIR/claude_filter.mp4"
+      ],
+      "ffprobe_command": [
+        "ffprobe",
+        "-v",
+        "error",
+        "-select_streams",
+        "v:0",
+        "-show_entries",
+        "stream=codec_name,pix_fmt,color_range,color_space,color_transfer,color_primaries,width,height",
+        "-of",
+        "json",
+        "$COLOR_CHECK_DIR/claude_filter.mp4"
+      ],
+      "decode_command": [
+        "ffmpeg",
+        "-v",
+        "error",
+        "-i",
+        "$COLOR_CHECK_DIR/claude_filter.mp4",
+        "-frames:v",
+        "1",
+        "-pix_fmt",
+        "yuv420p",
+        "-f",
+        "rawvideo",
+        "-"
+      ],
+      "tags": {
+        "codec_name": "h264",
+        "width": 64,
+        "height": 64,
+        "pix_fmt": "yuv420p",
+        "color_range": "tv",
+        "color_space": "bt709",
+        "color_transfer": "bt709",
+        "color_primaries": "bt709"
+      },
+      "yuv": [
+        63,
+        102,
+        240
+      ],
+      "sha256": "12070565bed5640de2094253dcc64e7f6a7e85be7e15f562e94447025807ac9e"
+    },
+    {
+      "name": "explicit_candidate",
+      "command": [
+        "ffmpeg",
+        "-hide_banner",
+        "-loglevel",
+        "error",
+        "-n",
+        "-framerate",
+        "30",
+        "-i",
+        "$COLOR_CHECK_DIR/red.png",
+        "-frames:v",
+        "1",
+        "-an",
+        "-vf",
+        "scale=in_range=pc:out_range=tv:out_color_matrix=bt709,format=yuv420p,setparams=colorspace=bt709:color_primaries=bt709:color_trc=bt709:range=tv",
+        "-c:v",
+        "libx264",
+        "-preset",
+        "medium",
+        "-crf",
+        "18",
+        "-pix_fmt",
+        "yuv420p",
+        "-movflags",
+        "+faststart",
+        "$COLOR_CHECK_DIR/explicit_candidate.mp4"
+      ],
+      "ffprobe_command": [
+        "ffprobe",
+        "-v",
+        "error",
+        "-select_streams",
+        "v:0",
+        "-show_entries",
+        "stream=codec_name,pix_fmt,color_range,color_space,color_transfer,color_primaries,width,height",
+        "-of",
+        "json",
+        "$COLOR_CHECK_DIR/explicit_candidate.mp4"
+      ],
+      "decode_command": [
+        "ffmpeg",
+        "-v",
+        "error",
+        "-i",
+        "$COLOR_CHECK_DIR/explicit_candidate.mp4",
+        "-frames:v",
+        "1",
+        "-pix_fmt",
+        "yuv420p",
+        "-f",
+        "rawvideo",
+        "-"
+      ],
+      "tags": {
+        "codec_name": "h264",
+        "width": 64,
+        "height": 64,
+        "pix_fmt": "yuv420p",
+        "color_range": "tv",
+        "color_space": "bt709",
+        "color_transfer": "bt709",
+        "color_primaries": "bt709"
+      },
+      "yuv": [
+        63,
+        102,
+        240
+      ],
+      "sha256": "12070565bed5640de2094253dcc64e7f6a7e85be7e15f562e94447025807ac9e"
+    }
+  ],
+  "chart": {
+    "command": [
+      "ffmpeg",
+      "-hide_banner",
+      "-loglevel",
+      "error",
+      "-n",
+      "-framerate",
+      "24",
+      "-i",
+      "$COLOR_CHECK_DIR/chart.png",
+      "-frames:v",
+      "1",
+      "-an",
+      "-vf",
+      "scale=in_range=pc:out_range=tv:out_color_matrix=bt709,format=yuv420p,setparams=colorspace=bt709:color_primaries=bt709:color_trc=bt709:range=tv",
+      "-c:v",
+      "libx264",
+      "-preset",
+      "medium",
+      "-crf",
+      "18",
+      "-pix_fmt",
+      "yuv420p",
+      "-movflags",
+      "+faststart",
+      "$COLOR_CHECK_DIR/chart-candidate.mp4"
+    ],
+    "decode_command": [
+      "ffmpeg",
+      "-v",
+      "error",
+      "-i",
+      "$COLOR_CHECK_DIR/chart-candidate.mp4",
+      "-frames:v",
+      "1",
+      "-pix_fmt",
+      "yuv420p",
+      "-f",
+      "rawvideo",
+      "-"
+    ],
+    "samples": [
+      {
+        "rgb": [
+          0,
+          0,
+          0
+        ],
+        "yuv": [
+          16,
+          128,
+          128
+        ]
+      },
+      {
+        "rgb": [
+          255,
+          255,
+          255
+        ],
+        "yuv": [
+          235,
+          128,
+          128
+        ]
+      },
+      {
+        "rgb": [
+          255,
+          0,
+          0
+        ],
+        "yuv": [
+          63,
+          102,
+          240
+        ]
+      },
+      {
+        "rgb": [
+          0,
+          255,
+          0
+        ],
+        "yuv": [
+          173,
+          42,
+          26
+        ]
+      },
+      {
+        "rgb": [
+          0,
+          0,
+          255
+        ],
+        "yuv": [
+          32,
+          240,
+          118
+        ]
+      },
+      {
+        "rgb": [
+          128,
+          128,
+          128
+        ],
+        "yuv": [
+          126,
+          128,
+          128
+        ]
+      }
+    ]
+  },
+  "bitstream_checks": [
+    {
+      "name": "original",
+      "command": [
+        "ffmpeg",
+        "-hide_banner",
+        "-loglevel",
+        "info",
+        "-i",
+        "$COLOR_CHECK_DIR/original.mp4",
+        "-map",
+        "0:v:0",
+        "-c:v",
+        "copy",
+        "-bsf:v",
+        "trace_headers",
+        "-f",
+        "null",
+        "-"
+      ],
+      "lines": [
+        "[trace_headers @ $ADDRESS] 67          video_signal_type_present_flag                              0 = 0"
+      ]
+    },
+    {
+      "name": "explicit_candidate",
+      "command": [
+        "ffmpeg",
+        "-hide_banner",
+        "-loglevel",
+        "info",
+        "-i",
+        "$COLOR_CHECK_DIR/explicit_candidate.mp4",
+        "-map",
+        "0:v:0",
+        "-c:v",
+        "copy",
+        "-bsf:v",
+        "trace_headers",
+        "-f",
+        "null",
+        "-"
+      ],
+      "lines": [
+        "[trace_headers @ $ADDRESS] 67          video_signal_type_present_flag                              1 = 1",
+        "[trace_headers @ $ADDRESS] 71          video_full_range_flag                                       0 = 0",
+        "[trace_headers @ $ADDRESS] 72          colour_description_present_flag                             1 = 1",
+        "[trace_headers @ $ADDRESS] 73          colour_primaries                                     00000001 = 1",
+        "[trace_headers @ $ADDRESS] 81          transfer_characteristics                             00000001 = 1",
+        "[trace_headers @ $ADDRESS] 89          matrix_coefficients                                  00000001 = 1"
+      ]
+    }
+  ]
+}

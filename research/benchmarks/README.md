@@ -39,7 +39,7 @@ research/benchmarks/build/WallpaperProbe \
 
 `cover` 必须额外给 `--cover`。它创建一个不透明、鼠标穿透的桌面层窗口，遮挡本探针；不会置于普通应用窗口之上。`--pause-on-occlusion` 根据播放器窗口的 AppKit occlusion 状态决定是否暂停，默认不启用，以便比较“持续请求播放”和“不可见时暂停”。必须查看 `window_visible` 与 `player_rate` 是否实际改变；命令名本身不能证明遮挡检测成功。
 
-总时长限制为 1–120 秒，正常完成后退出。Ctrl-C / SIGTERM 会停止自己的播放器、关闭自己的窗口并保存日志。进程关闭也会由 WindowServer 清理其窗口。探针不改变屏保、系统壁纸、能耗设置或焦点，不发起网络请求，不开启声音，不阻止屏幕睡眠；收到屏幕睡眠通知时暂停。
+默认总时长限制仍为 1–120 秒；只有显式传入 `--sustained` 才允许最长 3600 秒，仍自动退出，不取消上限。Ctrl-C / SIGTERM 会停止自己的播放器、关闭自己的窗口并保存日志。进程关闭也会由 WindowServer 清理其窗口。探针不改变屏保、系统壁纸、能耗设置或焦点，不发起网络请求，不开启声音，不阻止屏幕睡眠；收到屏幕睡眠通知时暂停。
 
 ## 每秒记录什么
 
@@ -69,7 +69,7 @@ research/benchmarks/build/WallpaperProbe \
 
 ## 外部系统采样和复现
 
-`measure.py` 启动上述探针，同时采样 WindowServer、WallpaperAgent、全部 VTDecoderXPCService 的累计 CPU 时间与 RSS，以及 IOKit 的全局 GPU 计数。它只保存这些指定进程的名称和数字，不保存其他进程的参数。总运行时间受限，超时只终止自己启动的探针。
+`measure.py` 启动上述探针，同时采样播放器、WindowServer、WallpaperAgent、全部 VTDecoderXPCService 的累计 CPU、RSS、进程启动身份、IOKit 全局 GPU，以及低频的 `top MEM` footprint。它只保存这些目标进程和一小组已知活动程序名称，不保存完整进程参数；名称存在不能证明正在渲染，名单为空也不能证明机器安静。脚本有超时和信号清理，只终止自己启动的探针。
 
 ```sh
 python3 research/benchmarks/measure.py \
@@ -81,9 +81,9 @@ python3 research/benchmarks/measure.py \
 python3 research/benchmarks/summarize.py research/benchmarks/results_private/my-new-batch
 ```
 
-外部脚本使用全新结果目录，记录二进制／视频哈希和执行参数。`ps TIME` 精度为百分之一秒，2 秒单次差分约有 0.5 个百分点的量化尺度；汇总使用更长区间的累计时间差。系统采样的阶段标签取自最近一次探针采样，可能滞后一秒左右，因此汇总剔除阶段开头 4 秒和末尾 3 秒；探针自身数据剔除开头 4 秒和末尾 1 秒。短 idle 段保留点很少，只能作为初步观察。
+外部脚本使用全新结果目录，记录二进制／视频和脚本哈希、执行参数、平台、电源来源与采样耗时。`ps TIME` 精度为百分之一秒，2 秒差分约有 0.5 个百分点量化尺度，不能把短时间的零增量当成零 CPU。新版 schema 2 使用跨进程相同的 `CLOCK_MONOTONIC`，按实际阶段起点对齐整个采集区间，默认去掉开头 4 秒和末尾 1 秒；`--warmup-seconds` 可调整预热。跨阶段采集被排除，最近一次探针采样的阶段标签只用于诊断。旧 schema 1 保留原先的短测算法和原始汇总值。
 
-IOKit GPU 百分比是驱动提供的全局快照，不是本进程 GPU 占用，也不是瓦数；全部 VTDecoder 的 RSS 包含其他应用，不能直接归属给壁纸。不要相加 footprint、RSS 和 GPU 分配数字作为“总内存”。
+IOKit GPU 百分比是驱动提供的全局快照，不是本进程 GPU 占用，也不是瓦数；新版按设备 ID 分别汇总，不能将不同 GPU 平均成一个设备。全部 VTDecoder 的 RSS/footprint 包含其他应用，不能直接归属给壁纸。不要相加 footprint、RSS 和 GPU 分配数字作为“总内存”。`top MEM` 是经过显示单位取整的 footprint 观测，不是精确到字节的原始 ledger；身份在读取前后必须一致。
 
 本次素材命令及哈希在 [fixtures.json](results/2026-11-10/fixtures.json)，将其中 `$FIXTURE_DIR` 路径占位符替换为自己的新目录即可重建。示例：
 
@@ -107,4 +107,44 @@ python3 research/benchmarks/sanitize_results.py \
   --fixture-root /absolute/original/fixture-directory
 ```
 
-若日志使用了 `/tmp` 与 `/private/tmp` 两种同义路径，请重复传入 `--fixture-root`。参数应填写生成记录时的实际路径，而非复制记录后的新路径。工具只复制 JSON/JSONL，稳定映射每个运行目录内的 PID，并删除 `started_unix_seconds` / `unix_seconds`；其他数值保留。路径替换只匹配字符串开头，不处理自由文本内嵌路径、JSON 键或文件名；PID 映射按直接父目录分组，嵌套样本目录或跨目录引用需要另行处理。它不会检测任意秘密或自由文本中的个人信息，发布前仍须检查文件列表、内容与汇总一致性。参见 [本批数据的公开处理记录](results/2026-11-10/SANITIZATION.md)。
+若日志使用了 `/tmp` 与 `/private/tmp` 两种同义路径，请重复传入 `--fixture-root`。参数应填写生成记录时的实际路径，而非复制记录后的新路径。工具只复制 JSON/JSONL，稳定映射每个运行目录内的 `pid` / `probe_pid`，将 schema 2 的 `identity.start_time` 映射为匿名启动标识，并删除 `started_unix_seconds` / `unix_seconds`；测量数值保持不变，同 PID 重启仍能区分。路径替换只匹配字符串开头，不处理自由文本内嵌路径、JSON 键或文件名；PID 映射按直接父目录分组，嵌套样本目录或跨目录引用需要另行处理。它不会检测任意秘密或自由文本中的个人信息，发布前仍须检查文件列表、内容与汇总一致性。参见 [本批数据的公开处理记录](results/2026-11-10/SANITIZATION.md)。
+
+## M1 工具入口与实际边界（schema 2）
+
+先编译本页的 Swift 源码。无 GUI 的参数验证不会创建输出目录或 JSONL：
+
+```sh
+python3 research/benchmarks/measure.py \
+  --probe research/benchmarks/build/WallpaperProbe \
+  --output-dir research/benchmarks/results_private/validation-only \
+  --schedule idle:3600 --sustained --validate
+
+python3 research/benchmarks/measure.py --capabilities
+```
+
+`--capabilities` 只做一次普通用户 `ps`/`ioreg`/定向 `top MEM` 检查，不启动探针，不提权。受环境沙盒限制时需要正常的命令访问权限，不能误认为必须 sudo。结果会包含 PID/启动时间，应先保存在被忽略目录。字段缺失、超时、权限失败是显式错误与 null，不用零值代替。
+
+下面是 **待安静桌面条件具备后执行** 的有界长测示例，不代表已经做过：
+
+```sh
+python3 research/benchmarks/measure.py \
+  --probe research/benchmarks/build/WallpaperProbe \
+  --video /absolute/path/to/720p24.mp4 \
+  --output-dir research/benchmarks/results_private/controlled-batch/run-01 \
+  --schedule idle:180,play:1920,pause:180,idle:180 \
+  --sustained --purpose controlled --warmup-seconds 60 \
+  --sample-interval 2 --footprint-interval 10 --pause-on-occlusion
+
+python3 research/benchmarks/summarize.py research/benchmarks/results_private/controlled-batch
+```
+
+总计划 2460 秒；播放阶段在剔除 60 秒预热和末尾 1 秒后，留出约 31 分钟的观测窗口，仍需检查实际有效采样跨度至少达到 30 分钟。`--purpose controlled` 只是记录意图，不会自动确认桌面完全可见或基线合格。第一阶段应先做短 smoke 确认日志、播放与退出，然后按计划组织三次重复、近邻静态对照和采样器开销校准。不同条件不能仅凭一个长脚本就声称完整矩阵已完成。不能在 TD/编码器工作时运行受控采样，IDE/桌面活动也须保持安静。
+
+- 默认每 2 秒采集 CPU/GPU，每 10 秒尝试定向 `top MEM`；`--footprint-interval 0` 可关闭 footprint，用于独立测量采样开销。每个子工具有超时，每次采样保留起止时间和墙钟耗时。
+- CPU 按 PID **和进程启动时间**核对；身份改变、缺失或累计时间倒退会拒绝差分。`ps lstart` 只有本地日历秒精度，属于防误配措施，不是不可碰撞的进程标识。
+- 汇总器报告单次观测和质量问题；当前始终把整体验收记为 `inconclusive`。重复静态基线资格、helper 归属、sampler 开销、30 分钟内存趋势与整套资源预算仍需后续分析和实测。
+- 暂停原因分别记录 `schedule`、`occluded`、`displaySleeping`、`sessionInactive`。未知会话状态显式记录并保守暂停；这些不是锁屏通知。初始状态来自公开 console/login 信息，会话通知仍需实机生命周期验证。
+- 手动锁屏试验先启动有限日志，再由用户真实锁定/解锁，记录事件时段。检查窗口可见性、media time、rate 与其他暂停原因；模拟回调或应用失焦不能替代真实锁屏。
+- 当前未实现或执行特权 `powermetrics` 工作流；GPU task ms/s 也不能替代全局利用率百分点门槛。
+
+相关实现：[system_metrics.py](system_metrics.py)、[schema 2 汇总器](summarize_v2.py)。运行测试：`python3 -m unittest discover -s tests -v`；macOS 参数测试会编译临时 Swift 二进制，或使用 `WALLPAPER_PROBE_BINARY` 指定已编译程序。

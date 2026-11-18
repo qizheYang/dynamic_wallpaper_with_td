@@ -15,6 +15,14 @@ def rounded(value):
 
 
 def summarize(directory):
+    metadata = directory / "metadata.json"
+    if metadata.exists() and json.loads(metadata.read_text()).get("schema_version") == 2:
+        from summarize_v2 import summarize as summarize_current
+        return summarize_current(directory)
+    return summarize_legacy(directory)
+
+
+def summarize_legacy(directory):
     rows = read_rows(directory / "probe.jsonl")
     systems = read_rows(directory / "system.jsonl")
     phases = [r for r in rows if r.get("event") == "phase"]
@@ -74,8 +82,8 @@ def main():
     parser.add_argument("results", type=Path)
     args = parser.parse_args()
     result = {
-        "method": "Probe: omit first4s and final1s of each phase; CPU cumulative-time delta across retained endpoints. System: use last probe phase stamp; omit first4s/final3s; GPU remains global, unattributed.",
-        "limitations": "Short pilot, one run per profile, ambient windows/background load uncontrolled; window_visible (NSWindow.occlusionState) means at least partial visibility, not full-screen visibility. Not a power or long-term memory-leak measurement.",
+        "method": "Schema 1 retains the original pilot algorithm. Schema 2 aligns complete sampler intervals to actual CLOCK_MONOTONIC phase boundaries, applies recorded warmup/tail guards, and rejects missing/restarted process identities.",
+        "limitations": "A run summary is not whole-system acceptance. window_visible means at least partial visibility. Global GPU and shared helpers are not per-player attribution. Legacy pilots remain uncontrolled short observations.",
         "runs": [summarize(p) for p in sorted(args.results.iterdir())
                  if p.is_dir() and (p / "probe.jsonl").exists()],
     }

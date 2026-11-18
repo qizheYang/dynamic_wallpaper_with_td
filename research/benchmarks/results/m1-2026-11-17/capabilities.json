@@ -1,0 +1,912 @@
+{
+  "schema_version": 2,
+  "purpose": "capability_snapshot_not_performance_acceptance",
+  "platform": "macOS-27.2.1-arm64-arm-64bit",
+  "power": {
+    "source": "pmset -g batt",
+    "power_source": "Battery Power"
+  },
+  "sample": {
+    "schema_version": 2,
+    "started_monotonic_seconds": 710546.739459,
+    "process_sample": {
+      "started_monotonic_seconds": 710546.739459,
+      "finished_monotonic_seconds": 710546.783463,
+      "processes": [
+        {
+          "pid": 1,
+          "name": "WindowServer",
+          "identity": {
+            "pid": 1,
+            "start_time": "anonymous-start-4"
+          },
+          "cpu_seconds": 36047.52,
+          "rss_bytes": 361775104,
+          "cpu_percent_one_core": null,
+          "cpu_delta_status": "first_sample_or_missing_predecessor"
+        },
+        {
+          "pid": 2,
+          "name": "WallpaperAgent",
+          "identity": {
+            "pid": 2,
+            "start_time": "anonymous-start-5"
+          },
+          "cpu_seconds": 21.6,
+          "rss_bytes": 22970368,
+          "cpu_percent_one_core": null,
+          "cpu_delta_status": "first_sample_or_missing_predecessor"
+        },
+        {
+          "pid": 3,
+          "name": "VTDecoderXPCService",
+          "identity": {
+            "pid": 3,
+            "start_time": "anonymous-start-6"
+          },
+          "cpu_seconds": 202.79,
+          "rss_bytes": 13434880,
+          "cpu_percent_one_core": null,
+          "cpu_delta_status": "first_sample_or_missing_predecessor"
+        },
+        {
+          "pid": 4,
+          "name": "VTDecoderXPCService",
+          "identity": {
+            "pid": 4,
+            "start_time": "anonymous-start-7"
+          },
+          "cpu_seconds": 0.81,
+          "rss_bytes": 24657920,
+          "cpu_percent_one_core": null,
+          "cpu_delta_status": "first_sample_or_missing_predecessor"
+        },
+        {
+          "pid": 5,
+          "name": "VTDecoderXPCService",
+          "identity": {
+            "pid": 5,
+            "start_time": "anonymous-start-8"
+          },
+          "cpu_seconds": 0.39,
+          "rss_bytes": 9093120,
+          "cpu_percent_one_core": null,
+          "cpu_delta_status": "first_sample_or_missing_predecessor"
+        },
+        {
+          "pid": 6,
+          "name": "VTDecoderXPCService",
+          "identity": {
+            "pid": 6,
+            "start_time": "anonymous-start-1"
+          },
+          "cpu_seconds": 0.17,
+          "rss_bytes": 16285696,
+          "cpu_percent_one_core": null,
+          "cpu_delta_status": "first_sample_or_missing_predecessor"
+        },
+        {
+          "pid": 7,
+          "name": "VTDecoderXPCService",
+          "identity": {
+            "pid": 7,
+            "start_time": "anonymous-start-9"
+          },
+          "cpu_seconds": 5.03,
+          "rss_bytes": 9469952,
+          "cpu_percent_one_core": null,
+          "cpu_delta_status": "first_sample_or_missing_predecessor"
+        },
+        {
+          "pid": 8,
+          "name": "VTDecoderXPCService",
+          "identity": {
+            "pid": 8,
+            "start_time": "anonymous-start-10"
+          },
+          "cpu_seconds": 0.2,
+          "rss_bytes": 10584064,
+          "cpu_percent_one_core": null,
+          "cpu_delta_status": "first_sample_or_missing_predecessor"
+        },
+        {
+          "pid": 9,
+          "name": "VTDecoderXPCService",
+          "identity": {
+            "pid": 9,
+            "start_time": "anonymous-start-10"
+          },
+          "cpu_seconds": 0.15,
+          "rss_bytes": 10223616,
+          "cpu_percent_one_core": null,
+          "cpu_delta_status": "first_sample_or_missing_predecessor"
+        },
+        {
+          "pid": 10,
+          "name": "VTDecoderXPCService",
+          "identity": {
+            "pid": 10,
+            "start_time": "anonymous-start-11"
+          },
+          "cpu_seconds": 0.31,
+          "rss_bytes": 11714560,
+          "cpu_percent_one_core": null,
+          "cpu_delta_status": "first_sample_or_missing_predecessor"
+        },
+        {
+          "pid": 11,
+          "name": "VTDecoderXPCService",
+          "identity": {
+            "pid": 11,
+            "start_time": "anonymous-start-16"
+          },
+          "cpu_seconds": 0.47,
+          "rss_bytes": 12992512,
+          "cpu_percent_one_core": null,
+          "cpu_delta_status": "first_sample_or_missing_predecessor"
+        },
+        {
+          "pid": 12,
+          "name": "VTDecoderXPCService",
+          "identity": {
+            "pid": 12,
+            "start_time": "anonymous-start-2"
+          },
+          "cpu_seconds": 456.78,
+          "rss_bytes": 15564800,
+          "cpu_percent_one_core": null,
+          "cpu_delta_status": "first_sample_or_missing_predecessor"
+        },
+        {
+          "pid": 13,
+          "name": "VTDecoderXPCService",
+          "identity": {
+            "pid": 13,
+            "start_time": "anonymous-start-17"
+          },
+          "cpu_seconds": 0.59,
+          "rss_bytes": 9093120,
+          "cpu_percent_one_core": null,
+          "cpu_delta_status": "first_sample_or_missing_predecessor"
+        },
+        {
+          "pid": 14,
+          "name": "VTDecoderXPCService",
+          "identity": {
+            "pid": 14,
+            "start_time": "anonymous-start-3"
+          },
+          "cpu_seconds": 0.08,
+          "rss_bytes": 9256960,
+          "cpu_percent_one_core": null,
+          "cpu_delta_status": "first_sample_or_missing_predecessor"
+        },
+        {
+          "pid": 15,
+          "name": "VTDecoderXPCService",
+          "identity": {
+            "pid": 15,
+            "start_time": "anonymous-start-18"
+          },
+          "cpu_seconds": 4.11,
+          "rss_bytes": 32342016,
+          "cpu_percent_one_core": null,
+          "cpu_delta_status": "first_sample_or_missing_predecessor"
+        },
+        {
+          "pid": 16,
+          "name": "VTDecoderXPCService",
+          "identity": {
+            "pid": 16,
+            "start_time": "anonymous-start-19"
+          },
+          "cpu_seconds": 0.2,
+          "rss_bytes": 9404416,
+          "cpu_percent_one_core": null,
+          "cpu_delta_status": "first_sample_or_missing_predecessor"
+        },
+        {
+          "pid": 17,
+          "name": "VTDecoderXPCService",
+          "identity": {
+            "pid": 17,
+            "start_time": "anonymous-start-20"
+          },
+          "cpu_seconds": 0.11,
+          "rss_bytes": 9306112,
+          "cpu_percent_one_core": null,
+          "cpu_delta_status": "first_sample_or_missing_predecessor"
+        },
+        {
+          "pid": 18,
+          "name": "VTDecoderXPCService",
+          "identity": {
+            "pid": 18,
+            "start_time": "anonymous-start-23"
+          },
+          "cpu_seconds": 1.6,
+          "rss_bytes": 13107200,
+          "cpu_percent_one_core": null,
+          "cpu_delta_status": "first_sample_or_missing_predecessor"
+        },
+        {
+          "pid": 19,
+          "name": "VTDecoderXPCService",
+          "identity": {
+            "pid": 19,
+            "start_time": "anonymous-start-24"
+          },
+          "cpu_seconds": 0.51,
+          "rss_bytes": 15417344,
+          "cpu_percent_one_core": null,
+          "cpu_delta_status": "first_sample_or_missing_predecessor"
+        },
+        {
+          "pid": 20,
+          "name": "VTDecoderXPCService",
+          "identity": {
+            "pid": 20,
+            "start_time": "anonymous-start-21"
+          },
+          "cpu_seconds": 0.1,
+          "rss_bytes": 9027584,
+          "cpu_percent_one_core": null,
+          "cpu_delta_status": "first_sample_or_missing_predecessor"
+        },
+        {
+          "pid": 21,
+          "name": "VTDecoderXPCService",
+          "identity": {
+            "pid": 21,
+            "start_time": "anonymous-start-22"
+          },
+          "cpu_seconds": 4.33,
+          "rss_bytes": 9093120,
+          "cpu_percent_one_core": null,
+          "cpu_delta_status": "first_sample_or_missing_predecessor"
+        },
+        {
+          "pid": 22,
+          "name": "VTDecoderXPCService",
+          "identity": {
+            "pid": 22,
+            "start_time": "anonymous-start-12"
+          },
+          "cpu_seconds": 1.47,
+          "rss_bytes": 13058048,
+          "cpu_percent_one_core": null,
+          "cpu_delta_status": "first_sample_or_missing_predecessor"
+        },
+        {
+          "pid": 23,
+          "name": "VTDecoderXPCService",
+          "identity": {
+            "pid": 23,
+            "start_time": "anonymous-start-13"
+          },
+          "cpu_seconds": 5930.98,
+          "rss_bytes": 31080448,
+          "cpu_percent_one_core": null,
+          "cpu_delta_status": "first_sample_or_missing_predecessor"
+        },
+        {
+          "pid": 24,
+          "name": "VTDecoderXPCService",
+          "identity": {
+            "pid": 24,
+            "start_time": "anonymous-start-14"
+          },
+          "cpu_seconds": 0.06,
+          "rss_bytes": 9060352,
+          "cpu_percent_one_core": null,
+          "cpu_delta_status": "first_sample_or_missing_predecessor"
+        },
+        {
+          "pid": 25,
+          "name": "VTDecoderXPCService",
+          "identity": {
+            "pid": 25,
+            "start_time": "anonymous-start-15"
+          },
+          "cpu_seconds": 280.4,
+          "rss_bytes": 13500416,
+          "cpu_percent_one_core": null,
+          "cpu_delta_status": "first_sample_or_missing_predecessor"
+        }
+      ],
+      "activity_names": [],
+      "errors": []
+    },
+    "gpu_sample": {
+      "started_monotonic_seconds": 710546.783474,
+      "finished_monotonic_seconds": 710546.800813,
+      "gpu_global": [
+        {
+          "device_id": "0x100000603",
+          "device_name": "AGXAcceleratorG17X",
+          "device_id_scope": "boot",
+          "source": "IORegistry PerformanceStatistics",
+          "Alloc system memory": 8292483072,
+          "Device Utilization %": 0,
+          "In use system memory": 685309952,
+          "Renderer Utilization %": 0,
+          "Tiler Utilization %": 0
+        }
+      ],
+      "errors": []
+    },
+    "footprint_sample": {
+      "started_monotonic_seconds": 710546.800824,
+      "finished_monotonic_seconds": 710547.74234,
+      "footprints": [
+        {
+          "pid": 1,
+          "physical_footprint_bytes": 1130364928,
+          "display_value": "1078M",
+          "source": "top MEM",
+          "rounded": true,
+          "identity_status": "matched_before_after",
+          "identity": {
+            "pid": 1,
+            "start_time": "anonymous-start-4"
+          }
+        },
+        {
+          "pid": 2,
+          "physical_footprint_bytes": 15728640,
+          "display_value": "15M",
+          "source": "top MEM",
+          "rounded": true,
+          "identity_status": "matched_before_after",
+          "identity": {
+            "pid": 2,
+            "start_time": "anonymous-start-5"
+          }
+        },
+        {
+          "pid": 3,
+          "physical_footprint_bytes": 53477376,
+          "display_value": "51M",
+          "source": "top MEM",
+          "rounded": true,
+          "identity_status": "matched_before_after",
+          "identity": {
+            "pid": 3,
+            "start_time": "anonymous-start-6"
+          }
+        },
+        {
+          "pid": 4,
+          "physical_footprint_bytes": 99614720,
+          "display_value": "95M",
+          "source": "top MEM",
+          "rounded": true,
+          "identity_status": "matched_before_after",
+          "identity": {
+            "pid": 4,
+            "start_time": "anonymous-start-7"
+          }
+        },
+        {
+          "pid": 5,
+          "physical_footprint_bytes": 4834304,
+          "display_value": "4721K",
+          "source": "top MEM",
+          "rounded": true,
+          "identity_status": "matched_before_after",
+          "identity": {
+            "pid": 5,
+            "start_time": "anonymous-start-8"
+          }
+        },
+        {
+          "pid": 6,
+          "physical_footprint_bytes": 4654080,
+          "display_value": "4545K",
+          "source": "top MEM",
+          "rounded": true,
+          "identity_status": "matched_before_after",
+          "identity": {
+            "pid": 6,
+            "start_time": "anonymous-start-1"
+          }
+        },
+        {
+          "pid": 7,
+          "physical_footprint_bytes": 5866496,
+          "display_value": "5729K",
+          "source": "top MEM",
+          "rounded": true,
+          "identity_status": "matched_before_after",
+          "identity": {
+            "pid": 7,
+            "start_time": "anonymous-start-9"
+          }
+        },
+        {
+          "pid": 8,
+          "physical_footprint_bytes": 4703232,
+          "display_value": "4593K",
+          "source": "top MEM",
+          "rounded": true,
+          "identity_status": "matched_before_after",
+          "identity": {
+            "pid": 8,
+            "start_time": "anonymous-start-10"
+          }
+        },
+        {
+          "pid": 9,
+          "physical_footprint_bytes": 4768768,
+          "display_value": "4657K",
+          "source": "top MEM",
+          "rounded": true,
+          "identity_status": "matched_before_after",
+          "identity": {
+            "pid": 9,
+            "start_time": "anonymous-start-10"
+          }
+        },
+        {
+          "pid": 10,
+          "physical_footprint_bytes": 5538816,
+          "display_value": "5409K",
+          "source": "top MEM",
+          "rounded": true,
+          "identity_status": "matched_before_after",
+          "identity": {
+            "pid": 10,
+            "start_time": "anonymous-start-11"
+          }
+        },
+        {
+          "pid": 11,
+          "physical_footprint_bytes": 6079488,
+          "display_value": "5937K",
+          "source": "top MEM",
+          "rounded": true,
+          "identity_status": "matched_before_after",
+          "identity": {
+            "pid": 11,
+            "start_time": "anonymous-start-16"
+          }
+        },
+        {
+          "pid": 12,
+          "physical_footprint_bytes": 4867072,
+          "display_value": "4753K",
+          "source": "top MEM",
+          "rounded": true,
+          "identity_status": "matched_before_after",
+          "identity": {
+            "pid": 12,
+            "start_time": "anonymous-start-2"
+          }
+        },
+        {
+          "pid": 13,
+          "physical_footprint_bytes": 5276672,
+          "display_value": "5153K",
+          "source": "top MEM",
+          "rounded": true,
+          "identity_status": "matched_before_after",
+          "identity": {
+            "pid": 13,
+            "start_time": "anonymous-start-17"
+          }
+        },
+        {
+          "pid": 14,
+          "physical_footprint_bytes": 4457472,
+          "display_value": "4353K",
+          "source": "top MEM",
+          "rounded": true,
+          "identity_status": "matched_before_after",
+          "identity": {
+            "pid": 14,
+            "start_time": "anonymous-start-3"
+          }
+        },
+        {
+          "pid": 15,
+          "physical_footprint_bytes": 8504320,
+          "display_value": "8305K",
+          "source": "top MEM",
+          "rounded": true,
+          "identity_status": "matched_before_after",
+          "identity": {
+            "pid": 15,
+            "start_time": "anonymous-start-18"
+          }
+        },
+        {
+          "pid": 16,
+          "physical_footprint_bytes": 6161408,
+          "display_value": "6017K",
+          "source": "top MEM",
+          "rounded": true,
+          "identity_status": "matched_before_after",
+          "identity": {
+            "pid": 16,
+            "start_time": "anonymous-start-19"
+          }
+        },
+        {
+          "pid": 17,
+          "physical_footprint_bytes": 4506624,
+          "display_value": "4401K",
+          "source": "top MEM",
+          "rounded": true,
+          "identity_status": "matched_before_after",
+          "identity": {
+            "pid": 17,
+            "start_time": "anonymous-start-20"
+          }
+        },
+        {
+          "pid": 18,
+          "physical_footprint_bytes": 5489664,
+          "display_value": "5361K",
+          "source": "top MEM",
+          "rounded": true,
+          "identity_status": "matched_before_after",
+          "identity": {
+            "pid": 18,
+            "start_time": "anonymous-start-23"
+          }
+        },
+        {
+          "pid": 19,
+          "physical_footprint_bytes": 5817344,
+          "display_value": "5681K",
+          "source": "top MEM",
+          "rounded": true,
+          "identity_status": "matched_before_after",
+          "identity": {
+            "pid": 19,
+            "start_time": "anonymous-start-24"
+          }
+        },
+        {
+          "pid": 20,
+          "physical_footprint_bytes": 4457472,
+          "display_value": "4353K",
+          "source": "top MEM",
+          "rounded": true,
+          "identity_status": "matched_before_after",
+          "identity": {
+            "pid": 20,
+            "start_time": "anonymous-start-21"
+          }
+        },
+        {
+          "pid": 21,
+          "physical_footprint_bytes": 5604352,
+          "display_value": "5473K",
+          "source": "top MEM",
+          "rounded": true,
+          "identity_status": "matched_before_after",
+          "identity": {
+            "pid": 21,
+            "start_time": "anonymous-start-22"
+          }
+        },
+        {
+          "pid": 22,
+          "physical_footprint_bytes": 51380224,
+          "display_value": "49M",
+          "source": "top MEM",
+          "rounded": true,
+          "identity_status": "matched_before_after",
+          "identity": {
+            "pid": 22,
+            "start_time": "anonymous-start-12"
+          }
+        },
+        {
+          "pid": 23,
+          "physical_footprint_bytes": 28311552,
+          "display_value": "27M",
+          "source": "top MEM",
+          "rounded": true,
+          "identity_status": "matched_before_after",
+          "identity": {
+            "pid": 23,
+            "start_time": "anonymous-start-13"
+          }
+        },
+        {
+          "pid": 24,
+          "physical_footprint_bytes": 4555776,
+          "display_value": "4449K",
+          "source": "top MEM",
+          "rounded": true,
+          "identity_status": "matched_before_after",
+          "identity": {
+            "pid": 24,
+            "start_time": "anonymous-start-14"
+          }
+        },
+        {
+          "pid": 25,
+          "physical_footprint_bytes": 7832576,
+          "display_value": "7649K",
+          "source": "top MEM",
+          "rounded": true,
+          "identity_status": "matched_before_after",
+          "identity": {
+            "pid": 25,
+            "start_time": "anonymous-start-15"
+          }
+        }
+      ],
+      "errors": []
+    },
+    "footprint_identity_check": {
+      "started_monotonic_seconds": 710547.742342,
+      "finished_monotonic_seconds": 710547.784832,
+      "processes": [
+        {
+          "pid": 1,
+          "name": "WindowServer",
+          "identity": {
+            "pid": 1,
+            "start_time": "anonymous-start-4"
+          },
+          "cpu_seconds": 36047.69,
+          "rss_bytes": 361873408
+        },
+        {
+          "pid": 2,
+          "name": "WallpaperAgent",
+          "identity": {
+            "pid": 2,
+            "start_time": "anonymous-start-5"
+          },
+          "cpu_seconds": 21.6,
+          "rss_bytes": 22970368
+        },
+        {
+          "pid": 3,
+          "name": "VTDecoderXPCService",
+          "identity": {
+            "pid": 3,
+            "start_time": "anonymous-start-6"
+          },
+          "cpu_seconds": 202.79,
+          "rss_bytes": 13434880
+        },
+        {
+          "pid": 4,
+          "name": "VTDecoderXPCService",
+          "identity": {
+            "pid": 4,
+            "start_time": "anonymous-start-7"
+          },
+          "cpu_seconds": 0.81,
+          "rss_bytes": 24657920
+        },
+        {
+          "pid": 5,
+          "name": "VTDecoderXPCService",
+          "identity": {
+            "pid": 5,
+            "start_time": "anonymous-start-8"
+          },
+          "cpu_seconds": 0.39,
+          "rss_bytes": 9093120
+        },
+        {
+          "pid": 6,
+          "name": "VTDecoderXPCService",
+          "identity": {
+            "pid": 6,
+            "start_time": "anonymous-start-1"
+          },
+          "cpu_seconds": 0.17,
+          "rss_bytes": 16285696
+        },
+        {
+          "pid": 7,
+          "name": "VTDecoderXPCService",
+          "identity": {
+            "pid": 7,
+            "start_time": "anonymous-start-9"
+          },
+          "cpu_seconds": 5.03,
+          "rss_bytes": 9469952
+        },
+        {
+          "pid": 8,
+          "name": "VTDecoderXPCService",
+          "identity": {
+            "pid": 8,
+            "start_time": "anonymous-start-10"
+          },
+          "cpu_seconds": 0.2,
+          "rss_bytes": 10584064
+        },
+        {
+          "pid": 9,
+          "name": "VTDecoderXPCService",
+          "identity": {
+            "pid": 9,
+            "start_time": "anonymous-start-10"
+          },
+          "cpu_seconds": 0.15,
+          "rss_bytes": 10223616
+        },
+        {
+          "pid": 10,
+          "name": "VTDecoderXPCService",
+          "identity": {
+            "pid": 10,
+            "start_time": "anonymous-start-11"
+          },
+          "cpu_seconds": 0.31,
+          "rss_bytes": 11714560
+        },
+        {
+          "pid": 11,
+          "name": "VTDecoderXPCService",
+          "identity": {
+            "pid": 11,
+            "start_time": "anonymous-start-16"
+          },
+          "cpu_seconds": 0.47,
+          "rss_bytes": 12992512
+        },
+        {
+          "pid": 12,
+          "name": "VTDecoderXPCService",
+          "identity": {
+            "pid": 12,
+            "start_time": "anonymous-start-2"
+          },
+          "cpu_seconds": 456.78,
+          "rss_bytes": 15564800
+        },
+        {
+          "pid": 13,
+          "name": "VTDecoderXPCService",
+          "identity": {
+            "pid": 13,
+            "start_time": "anonymous-start-17"
+          },
+          "cpu_seconds": 0.59,
+          "rss_bytes": 9093120
+        },
+        {
+          "pid": 14,
+          "name": "VTDecoderXPCService",
+          "identity": {
+            "pid": 14,
+            "start_time": "anonymous-start-3"
+          },
+          "cpu_seconds": 0.08,
+          "rss_bytes": 9256960
+        },
+        {
+          "pid": 15,
+          "name": "VTDecoderXPCService",
+          "identity": {
+            "pid": 15,
+            "start_time": "anonymous-start-18"
+          },
+          "cpu_seconds": 4.11,
+          "rss_bytes": 32342016
+        },
+        {
+          "pid": 16,
+          "name": "VTDecoderXPCService",
+          "identity": {
+            "pid": 16,
+            "start_time": "anonymous-start-19"
+          },
+          "cpu_seconds": 0.2,
+          "rss_bytes": 9404416
+        },
+        {
+          "pid": 17,
+          "name": "VTDecoderXPCService",
+          "identity": {
+            "pid": 17,
+            "start_time": "anonymous-start-20"
+          },
+          "cpu_seconds": 0.11,
+          "rss_bytes": 9306112
+        },
+        {
+          "pid": 18,
+          "name": "VTDecoderXPCService",
+          "identity": {
+            "pid": 18,
+            "start_time": "anonymous-start-23"
+          },
+          "cpu_seconds": 1.6,
+          "rss_bytes": 13107200
+        },
+        {
+          "pid": 19,
+          "name": "VTDecoderXPCService",
+          "identity": {
+            "pid": 19,
+            "start_time": "anonymous-start-24"
+          },
+          "cpu_seconds": 0.51,
+          "rss_bytes": 15417344
+        },
+        {
+          "pid": 20,
+          "name": "VTDecoderXPCService",
+          "identity": {
+            "pid": 20,
+            "start_time": "anonymous-start-21"
+          },
+          "cpu_seconds": 0.1,
+          "rss_bytes": 9027584
+        },
+        {
+          "pid": 21,
+          "name": "VTDecoderXPCService",
+          "identity": {
+            "pid": 21,
+            "start_time": "anonymous-start-22"
+          },
+          "cpu_seconds": 4.33,
+          "rss_bytes": 9093120
+        },
+        {
+          "pid": 22,
+          "name": "VTDecoderXPCService",
+          "identity": {
+            "pid": 22,
+            "start_time": "anonymous-start-12"
+          },
+          "cpu_seconds": 1.47,
+          "rss_bytes": 13058048
+        },
+        {
+          "pid": 23,
+          "name": "VTDecoderXPCService",
+          "identity": {
+            "pid": 23,
+            "start_time": "anonymous-start-13"
+          },
+          "cpu_seconds": 5931.03,
+          "rss_bytes": 31080448
+        },
+        {
+          "pid": 24,
+          "name": "VTDecoderXPCService",
+          "identity": {
+            "pid": 24,
+            "start_time": "anonymous-start-14"
+          },
+          "cpu_seconds": 0.06,
+          "rss_bytes": 9060352
+        },
+        {
+          "pid": 25,
+          "name": "VTDecoderXPCService",
+          "identity": {
+            "pid": 25,
+            "start_time": "anonymous-start-15"
+          },
+          "cpu_seconds": 280.40999999999997,
+          "rss_bytes": 13500416
+        }
+      ],
+      "activity_names": [],
+      "errors": []
+    },
+    "finished_monotonic_seconds": 710547.784865,
+    "sampler_seconds": 1.0454060001065955
+  },
+  "notes": [
+    "No sudo or GUI used; missing fields are not zero.",
+    "top MEM is a rounded physical-footprint ledger observation.",
+    "IOKit counters are whole-machine observations, not task GPU time.",
+    "This snapshot does not establish clean baselines, ownership, or sampler overhead."
+  ]
+}

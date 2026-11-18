@@ -1,0 +1,374 @@
+{
+  "method": "Schema 1 retains the original pilot algorithm. Schema 2 aligns complete sampler intervals to actual CLOCK_MONOTONIC phase boundaries, applies recorded warmup/tail guards, and rejects missing/restarted process identities.",
+  "limitations": "A run summary is not whole-system acceptance. window_visible means at least partial visibility. Global GPU and shared helpers are not per-player attribution. Legacy pilots remain uncontrolled short observations.",
+  "runs": [
+    {
+      "schema_version": 2,
+      "run": "smoke",
+      "purpose": "smoke",
+      "run_status": "complete",
+      "finish_reason": "schedule_complete",
+      "errors": [],
+      "phases": [
+        {
+          "index": 0,
+          "phase": "idle",
+          "quality": [
+            "windowserver_footprint_unavailable"
+          ],
+          "window": {
+            "start_monotonic_seconds": 710563.837599,
+            "end_monotonic_seconds": 710565.83864,
+            "seconds": 2.0010410000104457,
+            "warmup_seconds": 1.0,
+            "tail_guard_seconds": 1
+          },
+          "probe_samples": 2,
+          "process_samples": 1,
+          "gpu_samples": 1,
+          "footprint_samples": 0,
+          "windowserver_cpu": {
+            "status": "inconclusive",
+            "reason": "fewer_than_two_samples"
+          },
+          "gpu_global": {
+            "status": "observed_global",
+            "devices": {
+              "0x100000603": {
+                "count": 1,
+                "mean": 0,
+                "min": 0,
+                "max": 0
+              }
+            },
+            "reasons": []
+          },
+          "player_footprint_mib": {
+            "count": 2,
+            "mean": 7.625755,
+            "min": 7.625755310058594,
+            "max": 7.625755310058594
+          },
+          "player_rss_mib": {
+            "count": 2,
+            "mean": 56.109375,
+            "min": 56.109375,
+            "max": 56.109375
+          },
+          "player_cpu_percent_one_core": 0.051443,
+          "windowserver_footprint_mib_rounded": null,
+          "visible_samples": 0,
+          "ready_samples": 0,
+          "pause_reasons_observed": [
+            "schedule"
+          ]
+        },
+        {
+          "index": 1,
+          "phase": "play",
+          "quality": [
+            "windowserver_footprint_unavailable"
+          ],
+          "window": {
+            "start_monotonic_seconds": 710567.83864,
+            "end_monotonic_seconds": 710573.837793,
+            "seconds": 5.999153000069782,
+            "warmup_seconds": 1.0,
+            "tail_guard_seconds": 1
+          },
+          "probe_samples": 5,
+          "process_samples": 3,
+          "gpu_samples": 3,
+          "footprint_samples": 0,
+          "windowserver_cpu": {
+            "status": "observed",
+            "cpu_percent_one_core": 37.865926,
+            "interval_seconds": 4.014162999927066
+          },
+          "gpu_global": {
+            "status": "observed_global",
+            "devices": {
+              "0x100000603": {
+                "count": 3,
+                "mean": 16,
+                "min": 0,
+                "max": 28
+              }
+            },
+            "reasons": []
+          },
+          "player_footprint_mib": {
+            "count": 5,
+            "mean": 14.163361,
+            "min": 13.985244750976562,
+            "max": 14.250869750976562
+          },
+          "player_rss_mib": {
+            "count": 5,
+            "mean": 69.25625,
+            "min": 69.09375,
+            "max": 69.34375
+          },
+          "player_cpu_percent_one_core": 0.581835,
+          "windowserver_footprint_mib_rounded": null,
+          "visible_samples": 2,
+          "ready_samples": 5,
+          "pause_reasons_observed": [
+            "occluded"
+          ],
+          "playback_observed": true
+        },
+        {
+          "index": 2,
+          "phase": "cover",
+          "quality": [
+            "windowserver_footprint_unavailable"
+          ],
+          "window": {
+            "start_monotonic_seconds": 710575.837793,
+            "end_monotonic_seconds": 710577.838286,
+            "seconds": 2.0004929999122396,
+            "warmup_seconds": 1.0,
+            "tail_guard_seconds": 1
+          },
+          "probe_samples": 2,
+          "process_samples": 1,
+          "gpu_samples": 1,
+          "footprint_samples": 0,
+          "windowserver_cpu": {
+            "status": "inconclusive",
+            "reason": "fewer_than_two_samples"
+          },
+          "gpu_global": {
+            "status": "observed_global",
+            "devices": {
+              "0x100000603": {
+                "count": 1,
+                "mean": 0,
+                "min": 0,
+                "max": 0
+              }
+            },
+            "reasons": []
+          },
+          "player_footprint_mib": {
+            "count": 2,
+            "mean": 13.81337,
+            "min": 13.813369750976562,
+            "max": 13.813369750976562
+          },
+          "player_rss_mib": {
+            "count": 2,
+            "mean": 68.953125,
+            "min": 68.953125,
+            "max": 68.953125
+          },
+          "player_cpu_percent_one_core": 0.054799,
+          "windowserver_footprint_mib_rounded": null,
+          "visible_samples": 0,
+          "ready_samples": 2,
+          "pause_reasons_observed": [
+            "occluded"
+          ]
+        },
+        {
+          "index": 3,
+          "phase": "uncover",
+          "quality": [
+            "windowserver_footprint_unavailable"
+          ],
+          "window": {
+            "start_monotonic_seconds": 710579.838286,
+            "end_monotonic_seconds": 710583.837865,
+            "seconds": 3.9995790000539273,
+            "warmup_seconds": 1.0,
+            "tail_guard_seconds": 1
+          },
+          "probe_samples": 3,
+          "process_samples": 2,
+          "gpu_samples": 2,
+          "footprint_samples": 0,
+          "windowserver_cpu": {
+            "status": "observed",
+            "cpu_percent_one_core": 35.332243,
+            "interval_seconds": 2.009495999896899
+          },
+          "gpu_global": {
+            "status": "observed_global",
+            "devices": {
+              "0x100000603": {
+                "count": 2,
+                "mean": 0,
+                "min": 0,
+                "max": 0
+              }
+            },
+            "reasons": []
+          },
+          "player_footprint_mib": {
+            "count": 3,
+            "mean": 13.922745,
+            "min": 13.922744750976562,
+            "max": 13.922744750976562
+          },
+          "player_rss_mib": {
+            "count": 3,
+            "mean": 69.0625,
+            "min": 69.0625,
+            "max": 69.0625
+          },
+          "player_cpu_percent_one_core": 0.945268,
+          "windowserver_footprint_mib_rounded": null,
+          "visible_samples": 3,
+          "ready_samples": 3,
+          "pause_reasons_observed": [],
+          "playback_observed": true
+        },
+        {
+          "index": 4,
+          "phase": "pause",
+          "quality": [
+            "windowserver_footprint_unavailable"
+          ],
+          "window": {
+            "start_monotonic_seconds": 710585.837865,
+            "end_monotonic_seconds": 710587.837864,
+            "seconds": 1.9999989999923855,
+            "warmup_seconds": 1.0,
+            "tail_guard_seconds": 1
+          },
+          "probe_samples": 2,
+          "process_samples": 1,
+          "gpu_samples": 1,
+          "footprint_samples": 0,
+          "windowserver_cpu": {
+            "status": "inconclusive",
+            "reason": "fewer_than_two_samples"
+          },
+          "gpu_global": {
+            "status": "observed_global",
+            "devices": {
+              "0x100000603": {
+                "count": 1,
+                "mean": 0,
+                "min": 0,
+                "max": 0
+              }
+            },
+            "reasons": []
+          },
+          "player_footprint_mib": {
+            "count": 2,
+            "mean": 13.90712,
+            "min": 13.907119750976562,
+            "max": 13.907119750976562
+          },
+          "player_rss_mib": {
+            "count": 2,
+            "mean": 69.046875,
+            "min": 69.046875,
+            "max": 69.046875
+          },
+          "player_cpu_percent_one_core": 0.06436,
+          "windowserver_footprint_mib_rounded": null,
+          "visible_samples": 2,
+          "ready_samples": 2,
+          "pause_reasons_observed": [
+            "schedule"
+          ]
+        },
+        {
+          "index": 5,
+          "phase": "idle",
+          "quality": [
+            "windowserver_footprint_unavailable"
+          ],
+          "window": {
+            "start_monotonic_seconds": 710589.837864,
+            "end_monotonic_seconds": 710591.838172,
+            "seconds": 2.0003080000169575,
+            "warmup_seconds": 1.0,
+            "tail_guard_seconds": 1
+          },
+          "probe_samples": 2,
+          "process_samples": 1,
+          "gpu_samples": 1,
+          "footprint_samples": 0,
+          "windowserver_cpu": {
+            "status": "inconclusive",
+            "reason": "fewer_than_two_samples"
+          },
+          "gpu_global": {
+            "status": "observed_global",
+            "devices": {
+              "0x100000603": {
+                "count": 1,
+                "mean": 0,
+                "min": 0,
+                "max": 0
+              }
+            },
+            "reasons": []
+          },
+          "player_footprint_mib": {
+            "count": 2,
+            "mean": 13.922745,
+            "min": 13.922744750976562,
+            "max": 13.922744750976562
+          },
+          "player_rss_mib": {
+            "count": 2,
+            "mean": 69.09375,
+            "min": 69.09375,
+            "max": 69.09375
+          },
+          "player_cpu_percent_one_core": 0.037994,
+          "windowserver_footprint_mib_rounded": null,
+          "visible_samples": 0,
+          "ready_samples": 0,
+          "pause_reasons_observed": [
+            "schedule"
+          ]
+        }
+      ],
+      "sampler_seconds": {
+        "count": 15,
+        "mean": 0.287862,
+        "min": 0.08200399996712804,
+        "max": 1.1178240000735968
+      },
+      "activity_names": [],
+      "lifecycle_events": [
+        {
+          "event": "occlusion",
+          "elapsed_seconds": 4.063490999978967,
+          "pause_reasons": [],
+          "session_active": true
+        },
+        {
+          "event": "occlusion",
+          "elapsed_seconds": 7.810061999945901,
+          "pause_reasons": [
+            "occluded"
+          ],
+          "session_active": true
+        },
+        {
+          "event": "occlusion",
+          "elapsed_seconds": 16.021742999902926,
+          "pause_reasons": [],
+          "session_active": true
+        }
+      ],
+      "acceptance": {
+        "status": "inconclusive",
+        "reasons": [
+          "A run summary is not the repeated controlled M2 acceptance protocol.",
+          "System services are shared; decoder attribution is not established.",
+          "Full visibility, baseline stability and sampler overhead require separate evidence.",
+          "No battery-power, actual-lock, or sustained-release conclusion follows from this report."
+        ]
+      }
+    }
+  ]
+}

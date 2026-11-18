@@ -10,12 +10,13 @@ from pathlib import Path
 
 
 WALL_CLOCK_KEYS = {"started_unix_seconds", "unix_seconds"}
+PID_KEYS = {"pid", "probe_pid"}
 
 
 def collect_pids(value, pids):
     if isinstance(value, dict):
         for key, item in value.items():
-            if key == "pid" and type(item) is int:
+            if key in PID_KEYS and type(item) is int:
                 pids.add(item)
             collect_pids(item, pids)
     elif isinstance(value, list):
@@ -23,15 +24,28 @@ def collect_pids(value, pids):
             collect_pids(item, pids)
 
 
-def normalize(value, replacements, pid_map):
+def collect_starts(value, starts):
+    if isinstance(value, dict):
+        for key, item in value.items():
+            if key == "start_time" and isinstance(item, str):
+                starts.add(item)
+            collect_starts(item, starts)
+    elif isinstance(value, list):
+        for item in value:
+            collect_starts(item, starts)
+
+
+def normalize(value, replacements, pid_map, start_map=None):
+    start_map = start_map or {}
     if isinstance(value, dict):
         return {
-            key: (pid_map[item] if key == "pid" and type(item) is int
-                  else normalize(item, replacements, pid_map))
+            key: (pid_map[item] if key in PID_KEYS and type(item) is int
+                  else start_map[item] if key == "start_time" and isinstance(item, str) and item in start_map
+                  else normalize(item, replacements, pid_map, start_map))
             for key, item in value.items() if key not in WALL_CLOCK_KEYS
         }
     if isinstance(value, list):
-        return [normalize(item, replacements, pid_map) for item in value]
+        return [normalize(item, replacements, pid_map, start_map) for item in value]
     if isinstance(value, str):
         for prefix, placeholder in replacements:
             if value == prefix or value.startswith(prefix + "/"):
@@ -60,7 +74,7 @@ def main():
     replacements = sorted(((p.rstrip("/"), marker) for p, marker in prefixes),
                           key=lambda item: len(item[0]), reverse=True)
 
-    records, pid_sets = {}, {}
+    records, pid_sets, start_sets = {}, {}, {}
     for path in sorted(source.rglob("*")):
         if path.is_symlink():
             parser.error("source must not contain symbolic links")
@@ -73,14 +87,18 @@ def main():
                  if path.suffix == ".jsonl" else json.loads(path.read_text()))
         records[relative] = value
         collect_pids(value, pid_sets.setdefault(group, set()))
+        collect_starts(value, start_sets.setdefault(group, set()))
     if not records:
         parser.error("source contains no JSON or JSONL files")
     pid_maps = {group: {pid: i + 1 for i, pid in enumerate(sorted(pids))}
                 for group, pids in pid_sets.items()}
 
+    start_maps = {group: {stamp: f"anonymous-start-{i + 1}" for i, stamp in enumerate(sorted(stamps))}
+                  for group, stamps in start_sets.items()}
+
     output.mkdir(parents=True, exist_ok=False)
     for relative, value in records.items():
-        clean = normalize(value, replacements, pid_maps[relative.parent])
+        clean = normalize(value, replacements, pid_maps[relative.parent], start_maps[relative.parent])
         destination = output / relative
         destination.parent.mkdir(parents=True, exist_ok=True)
         content = ("".join(json.dumps(row, ensure_ascii=False) + "\n" for row in clean)

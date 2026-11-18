@@ -1,0 +1,86 @@
+{
+  "schema_version": 2,
+  "command": [
+    "$PROJECT_ROOT/research/benchmarks/build/WallpaperProbe",
+    "--output",
+    "$PROJECT_ROOT/research/benchmarks/results_private/m1-2026-11-17/smoke/probe.jsonl",
+    "--schedule",
+    "idle:4,play:8,cover:4,uncover:6,pause:4,idle:4",
+    "--video",
+    "$FIXTURE_DIR/loop.mp4",
+    "--cover",
+    "--pause-on-occlusion"
+  ],
+  "probe_config": {
+    "cover_allowed": true,
+    "max_duration_seconds": 120,
+    "output": "$PROJECT_ROOT/research/benchmarks/results_private/m1-2026-11-17/smoke/probe.jsonl",
+    "pause_on_occlusion": true,
+    "schedule": [
+      {
+        "seconds": 4,
+        "state": "idle"
+      },
+      {
+        "seconds": 8,
+        "state": "play"
+      },
+      {
+        "seconds": 4,
+        "state": "cover"
+      },
+      {
+        "seconds": 6,
+        "state": "uncover"
+      },
+      {
+        "seconds": 4,
+        "state": "pause"
+      },
+      {
+        "seconds": 4,
+        "state": "idle"
+      }
+    ],
+    "schema_version": 2,
+    "sustained": false,
+    "total_seconds": 30,
+    "video_path": "$FIXTURE_DIR/loop.mp4"
+  },
+  "purpose": "smoke",
+  "probe_sha256": "43b9c35d5a53ed2558ebe0f4500e23335165d4ee14c4643756e7c5586768f9c5",
+  "video_sha256": "beb17016cc013582f81ecd4b3dd5c542fd8dad44638fe3d2cf6c56ef57308b4b",
+  "sample_interval_seconds": 2,
+  "footprint_interval_seconds": 10,
+  "warmup_seconds": 1.0,
+  "tail_guard_seconds": 1,
+  "platform": "macOS-27.2.1-arm64-arm-64bit",
+  "python": "3.9.6",
+  "power_start": {
+    "source": "pmset -g batt",
+    "power_source": "Battery Power"
+  },
+  "run_status": "complete",
+  "source_sha256": {
+    "measure.py": "8fdaf783c0dfec37cbd75e872f17a5bea89394184e02df5b9e2fd6bb2f4978bc",
+    "system_metrics.py": "33433c1766eb3f49ac6f962e11a0cc42623e1f250586264b9c632a4d9f010d3a",
+    "summarize.py": "51ddf29b5d82da64912aab7bec9287cfe5a0f8e8206e4517f08ba8807e2facab",
+    "sanitize_results.py": "e16347afd18ed202762420595cf8e4a1cc0b9faa248281b701a4ea2ff5fcf78d",
+    "summarize_v2.py": "3cc888671bdb8e3c7c739f4335ba5d9d7ba954091e5160a9a5ca2056f1d327e8"
+  },
+  "notes": [
+    "All sampler/probe times use CLOCK_MONOTONIC in seconds.",
+    "Use sampler intervals and actual phase boundaries, never latest-sample phase labels, for analysis.",
+    "Whole-system GPU and system-wide decoder services are not attributed to the player.",
+    "top MEM is rounded footprint, separate from ps RSS; monitor overhead remains uncalibrated.",
+    "Known activity names indicate presence only; this is not a complete background-work inventory."
+  ],
+  "probe_pid": 21,
+  "probe_exit_code": 0,
+  "wall_seconds": 30.074995000031777,
+  "power_end": {
+    "source": "pmset -g batt",
+    "power_source": "Battery Power"
+  },
+  "probe_log_errors": []
+}
