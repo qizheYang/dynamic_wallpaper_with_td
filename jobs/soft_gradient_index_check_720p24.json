@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "job_id": "soft_gradient_index_check_720p24",
+  "template": {"id": "soft_gradient", "version": 1, "path": "td/wallpaper_template.toe"},
+  "seed": 42,
+  "width": 1280,
+  "height": 720,
+  "fps": 24,
+  "frame_count": 480,
+  "parameters": {"palette": "dusk", "motion_cycles": 1, "debug_index": true},
+  "source": {"format": "png", "bit_depth": 8, "color": "rgb_rec709_bt709trc_full"},
+  "output_dir": "renders/soft_gradient_index_check_720p24"
+}

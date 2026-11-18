@@ -13,6 +13,10 @@
 research/benchmarks/results_private/
 research/benchmarks/fixtures/
 renders/
+# Local TD working projects embed the TDMCP server component, which must not be redistributed.
+td/*.toe
+!td/wallpaper_template.toe
+td/Backup/
 *.mp4
 *.mov
 *.zip

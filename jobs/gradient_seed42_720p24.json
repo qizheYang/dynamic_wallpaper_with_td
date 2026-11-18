@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "job_id": "gradient_seed42_720p24",
+  "template": {"id": "soft_gradient", "version": 1, "path": "td/wallpaper_template.toe"},
+  "seed": 42,
+  "width": 1280,
+  "height": 720,
+  "fps": 24,
+  "frame_count": 480,
+  "parameters": {"palette": "dusk", "motion_cycles": 1},
+  "source": {"format": "png", "bit_depth": 8, "color": "rgb_rec709_bt709trc_full"},
+  "encode": {"codec": "libx264", "preset": "medium", "crf": 18},
+  "output_dir": "renders/gradient_seed42_720p24"
+}
