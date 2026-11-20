@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "scope": "Local native application functional smoke; not whole-system performance acceptance",
+  "platform": "Apple M5 Max / macOS 27.2.1 / arm64",
+  "provenance": {
+    "source": "Ignored product JSONL logs copied unchanged to research/benchmarks/results_private/native-app-preview",
+    "sanitization": "Public summary omits process/display/asset identifiers, personal paths and exact wall-clock timestamps. Measurement values are calculated directly from raw samples.",
+    "binary_sha256": "a57ab48d0ea0a2dbad69965e30afa599a2aa4cefb0a7d985963f149f7fb7b262"
+  },
+  "runs": [
+    {
+      "id": "smoke-product-01",
+      "battery_playback_override": false,
+      "samples": 90,
+      "normal_termination": true,
+      "errors": 0,
+      "maximum_process_footprint_bytes": 20808616,
+      "player_loaded_samples": 0,
+      "advancing_rate_samples": 0,
+      "maximum_loop_count": 0,
+      "maximum_media_seconds": 0,
+      "scope_note": "Process metrics include the visible control window and opt-in logger; no helper/GPU attribution or paired system baseline."
+    },
+    {
+      "id": "smoke-product-02",
+      "battery_playback_override": true,
+      "samples": 90,
+      "normal_termination": true,
+      "errors": 0,
+      "maximum_process_footprint_bytes": 50824320,
+      "player_loaded_samples": 80,
+      "advancing_rate_samples": 50,
+      "maximum_loop_count": 1,
+      "maximum_media_seconds": 19.967803625,
+      "scope_note": "Process metrics include the visible control window and opt-in logger; no helper/GPU attribution or paired system baseline.",
+      "long_pause_unloaded_sample_seconds": [
+        56.2665044166788,
+        57.26653616668773,
+        58.266509833338205,
+        59.266523833357496,
+        60.266438875027234,
+        61.266509083332494,
+        62.26649041668861,
+        63.26653670833912,
+        64.26600733335363
+      ]
+    }
+  ],
+  "unverified": [
+    "Helper and WindowServer footprint",
+    "System GPU increment and power",
+    "Sustained memory stability",
+    "Actual lock/unlock, sleep/wake and display hotplug",
+    "Color comparison between TouchDesigner and AVPlayer",
+    "Paid model provider and real Keychain credential trial"
+  ],
+  "weather_product_runs": [
+    {
+      "id": "weather-product-01",
+      "samples": 40,
+      "normal_termination": true,
+      "weather_statuses": [
+        "Updating weather\u2026",
+        "Offline scene \u00b7 Data connection unavailable."
+      ],
+      "scene_statuses": [
+        "\u9759\u6001\u573a\u666f \u00b7 occluded, onBattery"
+      ],
+      "reported_app_errors": 0,
+      "interpretation": "First request failed and static offline fallback worked."
+    },
+    {
+      "id": "weather-product-02",
+      "samples": 40,
+      "normal_termination": true,
+      "weather_statuses": [
+        "Open-Meteo model data \u00b7 updated"
+      ],
+      "scene_statuses": [
+        "\u9759\u6001\u573a\u666f \u00b7 occluded, onBattery"
+      ],
+      "reported_app_errors": 0,
+      "interpretation": "Fresh isolated retry fetched live model weather; normal battery policy kept the native scene static."
+    }
+  ],
+  "weather_product_binary_sha256": "4b81ee2d28831dfcea655db6018946759f2e936d6287260e13cd527fb48f9bdb",
+  "final_signed_bundle_smoke": {
+    "samples": 15,
+    "normal_termination": true,
+    "reported_app_errors": 0,
+    "player_loaded_samples": 0,
+    "normal_battery_policy": true,
+    "binary_sha256": "93cef3387623c59318fabb94a3009917a791b8c1fe88ac64ad5c79a166f52ac0",
+    "note": "Final documentation/resource repack changes the ad-hoc signed Mach-O hash; this smoke verifies that exact final bundle. No production source changed after the successful weather run."
+  }
+}

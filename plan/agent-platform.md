@@ -1,6 +1,6 @@
 # Agent-assisted wallpaper platform
 
-Scope extension requested 2026-11-17. This document extends the [implementation plan](README.md), rather than replacing the verified disk pipeline or relaxing the low-resource requirement. New capabilities below are **planned, not implemented**. Source feasibility and interoperability limits are in [research/06](../research/06-interactive-agent-platform.md).
+Scope extension requested 2026-11-17. This document extends the [implementation plan](README.md), rather than replacing the verified disk pipeline or relaxing the low-resource requirement. The [native preview](../app/README.md) now implements a bounded subset: model proposals using shipped skill context, calibrated local generation, editable TD copies, Keychain/selected `.env`, a weather connector and typed custom HTTPS mapping to a constrained native scene. Broader capabilities below remain targets. See [shared status](../agents_shared/README.md) for actual verification. Source feasibility and interoperability limits are in [research/06](../research/06-interactive-agent-platform.md).
 
 ## Product outcomes
 
@@ -79,6 +79,8 @@ The app stores user-supplied provider/data credentials in Keychain and passes ea
 
 ## First vertical slice: Los Angeles weather
 
+The preview takes the constrained native-scene route: Open-Meteo data drives native gradients, clouds and precipitation with TD closed. It has one real public endpoint fetch plus fixture checks, but no controlled whole-system scene performance pass. The pre-rendered TD weather-variant family described below remains a subsequent authoring deliverable; it has not been generated or silently substituted into the current gradient template.
+
 Input: “Generate a wallpaper whose appearance follows current Los Angeles weather.” Use the city location already specified; no device-location permission is necessary. Record whether “current” means provider model data or a user-selected observation source, plus timezone and units. Start with a personal-development Open-Meteo profile; commercial distribution requires a suitable provider plan and attribution. See the [example configuration](../examples/weather-los-angeles/README.md).
 
 Agent creation produces a brief, editable TD source, a small set of validated clips/covers (clear, cloudy, rain, snow, storm, fog, day/night as appropriate), and a proposed data-to-variant mapping. Exact asset count should avoid redundant combinations. Poll current conditions on a proposed 15-minute cadence, cache them, normalize weather code/daylight, and select a single active clip. No model call, TD launch or video regeneration occurs on each refresh. A later live renderer can use cloud fraction, wind and precipitation intensity as continuous parameters.
@@ -102,6 +104,6 @@ Do not reinterpret the low-resource requirement as irrelevant when enabling rich
 ## Open decisions
 
 - Settled user choice: implement comparable features first; evaluate direct Workshop-content compatibility separately. Do not block the main platform on that research.
-- Which live renderer should ship first: a constrained native effect set versus TouchEngine versus Web. Decide with a representative weather/audio/mouse scene and measured dependencies/cost, not a promise to implement every engine at once.
-- Exact supported model providers and schema adapters; select against real available endpoints and user preference during implementation. No key is required to review this design.
+- The preview selects a constrained native CoreAnimation weather effect set. Whether it should ship, and which additional TouchEngine/Web/audio/mouse backends to support, still needs representative dependency and resource evidence.
+- Anthropic Messages and OpenAI-compatible Chat Completions adapters are implemented against fixtures. A real provider/model trial with an explicitly supplied key remains required; no key is needed to review the design or run local template creation.
 - App signing/distribution, third-party SDK/runtime redistribution and actual commercial licensing before a public release. Do not bundle an installed TD/MCP component or runtime merely because it exists locally.

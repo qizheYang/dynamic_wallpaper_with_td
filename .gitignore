@@ -21,3 +21,5 @@ td/Backup/
 *.mov
 *.zip
 *.dmg
+app/.build/
+app/.swiftpm/

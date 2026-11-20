@@ -8,6 +8,19 @@ The final deliverables are **a wallpaper app whose default playback starts and r
 
 **Current status and review decisions:** see [the shared project status](agents_shared/README.md#current-review-state). This README describes the intended system and the evidence below; it does not substitute for performance acceptance. The [complete plan](plan/README.md) and [Claude implementation prompt](plan/claude-implementation-prompt.md) define the coding handoff.
 
+## Run the local app
+
+The native **Wallpaper Studio** development preview is implemented in [`app/`](app/README.md):
+
+```sh
+python3 app/build_app.py
+open 'app/build/Wallpaper Studio.app'
+```
+
+It imports validated wallpaper bundles, plays a muted video with TD closed, keeps a static cover under the power policy, and provides menu-bar controls. Explicit creation can run the calibrated TD template and import the result; this complete app-to-TD-to-library workflow has been exercised. Optional pages provide model proposals using the shipped skill, editable TD copies, Los Angeles weather and typed custom HTTPS data. Read [the app guide](app/README.md) for dependencies, credentials, supported inputs and validation limits.
+
+This is an ad-hoc-signed local preview. Actual model-provider requests, full desktop lifecycle tests, sustained whole-system performance acceptance and broader Wallpaper Engine features remain open; the preview is not a finished public release.
+
 ## What we are going to build
 
 - One parameterized TD visual template with fixed seeds and frame-based animation.
@@ -36,7 +49,7 @@ flowchart LR
     S[Visibility, session, power and thermal policy] --> P
 ```
 
-The playback implementation remains a decision to make after controlled measurements. Existing applications provide useful mechanisms, but their marketing claims and our small probe cannot substitute for testing the actual selected solution.
+The preview uses our own public AppKit/AVFoundation host, selected in [ADR 001](plan/adr-001-native-preview.md) after screening the pinned existing-player sources. Controlled measurements still gate release acceptance; this choice is not a benchmark ranking of those applications.
 
 ## What has been verified
 
@@ -48,6 +61,8 @@ The playback implementation remains a decision to make after controlled measurem
 | Encoding tooling | Job/sequence validation, FFmpeg encoding, bundle publication, regression tests | Synthetic 720p24 bundle reproduced; cancellation and source-color validation hardened |
 | Measurement tooling | Bounded sustained mode, process identity checks, non-root footprint sampling, phase-aligned summaries | 90 tests passed at the M1 checkpoint; later TD report records 93 tests. Sampler overhead and controlled baselines pending |
 | TD automation | Batch TD runner, generated template `.toe`, chart/index checks, two real 720p24 480-frame exports | Byte-identical frames and video across two exports; all bundle checks pass. AVPlayer color/loop review pending |
+| Product app | Native release build, actual GUI import/apply and app-triggered 480-frame TD generation; two 90-second product smoke runs | Battery static fallback and bounded diagnostic play/pause/release/resume observed; full lifecycle/resource acceptance pending |
+| Agent and data features | Typed model proposals, Keychain profiles, safe selected `.env` parsing, weather/custom mapping and portable core checks | Real public weather fetch passed; model transport uses fixtures, no paid provider trial |
 | Whole-system resource budgets | Noisy GPU baseline; helper-memory attribution incomplete | **Not accepted** |
 | Long-term stability and complete desktop lifecycle | Sustained runs, actual lock/sleep, Spaces, and display changes | Pending |
 
@@ -75,6 +90,7 @@ Initial proposed budgets include a whole-playback CPU increment of at most 5 per
 ├── README.md                 Project purpose, status, and entry points
 ├── AGENTS.md                 Shared workflow and milestone reporting rules
 ├── CLAUDE.md                 Entry point for Claude's review and collaboration
+├── app/                      Native macOS application, build and core checks
 ├── plan/
 │   ├── README.md             Milestones, architecture decisions, risks, acceptance
 │   ├── agent-platform.md     Agent APIs, templates, data sources, live renderers
@@ -138,7 +154,7 @@ The measurement command opens a temporary click-through desktop-level window, ru
 
 Read [the benchmark guide](research/benchmarks/README.md) before interpreting output. In particular, at-least-partial visibility is not full-desktop visibility, process RSS is not total memory, and global GPU utilization is not attributable process GPU usage. The probe defaults to a 120-second cap; an explicit `--sustained` mode permits finite runs up to 3,600 seconds. The longer controlled protocol remains unrun.
 
-For TD work, the locally researched build is 2025.33230 and the actual license is not yet confirmed. Non-Commercial has resolution and usage restrictions; external encoding does not remove them. Consult [TD research](research/02-touchdesigner-video-automation.md) before choosing an export profile.
+For TD work, the calibrated build is 2025.33230; real export evidence identifies TouchDesigner Non-Commercial. Its resolution and usage restrictions still apply; external encoding does not remove them. Consult [TD research](research/02-touchdesigner-video-automation.md) and [calibration evidence](td/calibration/README.md) before changing a profile or distributing generated media.
 
 ## Planned milestones
 

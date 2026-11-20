@@ -1,6 +1,6 @@
 # Implementation plan
 
-Review disposition and current ownership: [shared project status](../agents_shared/README.md#current-review-state). Plan revised 2026-11-17; the [Claude implementation prompt](claude-implementation-prompt.md) defines the first coding assignment.
+Review disposition and current ownership: [shared project status](../agents_shared/README.md#current-review-state). Plan revised 2026-11-19; the [Claude implementation prompt](claude-implementation-prompt.md) records the first coding assignment. [ADR 001](adr-001-native-preview.md) records the native preview decision and preserves release gates.
 
 This plan turns the research into an implementation sequence. The user delegated the review decisions to gpt6astra and requested a coding handoff to Claude. M1 measurement tooling and M3 asset-production code may proceed independently; a performance pass remains a separate requirement for the playback decision and release. The existing Swift program is a measurement probe, not the wallpaper application.
 
@@ -20,13 +20,13 @@ The first usable scope remains one screen and one local 720p24 SDR asset, with s
 | Item | Status | Evidence or next action |
 | --- | --- | --- |
 | macOS wallpaper mechanisms and public desktop-window approach | Researched | [macOS research](../research/01-macos-dynamic-wallpaper.md) |
-| TD deterministic rendering, output options, and license constraints | Researched; real chart/index/art exports reported by Claude | [TD automation research](../research/02-touchdesigner-video-automation.md) and [latest owner report](../agents_shared/%5Bclaude%5D%5B2026-11-17_18-23-55-0800%5D.md); metadata correction review and AVPlayer visual checks remain open |
+| TD deterministic rendering, output options, and license constraints | Researched; real chart/index/art exports verified | [TD automation research](../research/02-touchdesigner-video-automation.md), [calibration profile and evidence](../td/calibration/README.md), and [shared review status](../agents_shared/README.md#current-review-state); AVPlayer visual checks remain open |
 | Existing-player implementation patterns | Source-reviewed at pinned commits; applications not benchmarked | [existing applications](../research/04-existing-apps-performance.md) |
 | Native video playback and occlusion pause/resume | Four short local pilot runs completed | [performance report](../research/05-performance-feasibility.md) and its raw-data links |
 | Whole-system CPU, GPU, helper memory, and long-term stability | **Not accepted** | Noisy baselines, incomplete attribution, no sustained test |
-| Disk task runner, validation, and synthetic asset | Implemented; regression-tested | [Pipeline guide](../pipeline/README.md); real TD export remains pending |
-| TouchDesigner template and product player | Dedicated template and real repeat exports reported; product player not implemented | Milestones below; review and visual checks tracked in shared status |
-| Reuse an existing player or build a small native one | Decision pending | Compare one suitable existing candidate against the same acceptance criteria |
+| Disk task runner, validation, and synthetic asset | Implemented; regression-tested; real TD exports verified | [Pipeline guide](../pipeline/README.md); remaining runner and calibration work is tracked in [shared status](../agents_shared/README.md#current-review-state) |
+| TouchDesigner template and product player | Dedicated template and native app implemented; real in-app generation/import exercised | [App guide](../app/README.md); full lifecycle, color and resource checks remain open |
+| Reuse an existing player or build a small native one | Native preview selected after source screening; performance gate remains open | [ADR 001](adr-001-native-preview.md); no existing-player performance ranking claimed |
 | Review decisions and active assignments | Maintained in one place | [Shared project status and reports](../agents_shared/README.md#current-review-state) |
 
 In the single-run pilots, playback-process CPU was approximately 1.31–1.74% of one core and its physical footprint approximately 15.28–16.38 MiB. These are **process-only observations**, not the total cost of a wallpaper. WindowServer, decoder services, shared surfaces, and GPU work remain material. The existing data do not establish a GPU pass, a battery-life improvement, or a performance ranking of existing applications.
@@ -73,6 +73,8 @@ This gate now selects playback components and the first integration, not whether
 
 Write an architecture decision record after controlled playback tests and the M1 lock/unlock signal feasibility spike. It must state the chosen option, candidate versions, evidence, declared lock-support scope, license compatibility, missing behavior, expected maintenance, and reasons for rejecting the alternatives.
 
+[ADR 001](adr-001-native-preview.md) permits implementation and local smoke checks before that final acceptance record. The preview uses a small public-API native host after source-based candidate screening. It does not waive controlled resource, real lock/sleep or release requirements and does not claim existing candidates were benchmarked.
+
 Screen one appropriate existing player first for license, local-video support, required pause/recovery behavior, and unwanted dependencies. The pinned [source comparison](../research/04-existing-apps-performance.md) is a shortlist, not an endorsement. Only a candidate that passes this inexpensive screen proceeds to the full same-fixture performance comparison. Record rejection evidence; if none qualifies, do not install candidates merely to fill a matrix. Record any settings changed by a tested candidate and how they are restored.
 
 | Choose reuse when | Choose a new native player when |
@@ -87,6 +89,8 @@ An external player can remain an optional dependency; reuse does not automatical
 ## 5. Milestones, deliverables, and checkpoints
 
 Dependencies are `M0 → M1 → M2 → M4 → M5` and, independently, `M0 → M3 → M4`. M6 skill drafting starts alongside M3; its end-to-end acceptance depends on M3 and M4 and carries forward M5's measured limits. M2 may use synthetic fixtures while M3 is underway; M4 needs both the M2 decision and M3 asset, and the final TD asset must be re-tested before release. M1 and M3 can be developed in parallel, with one owner per shared file. **TD cooking/rendering, encoding, and controlled playback measurement must not overlap on this machine.** Coding in parallel does not authorize overlapping GPU work.
+
+These arrows remain acceptance dependencies. Under ADR 001, M4 engineering and bounded local checks may proceed before M1/M2 acceptance. The current app includes an initial M7/M8 slice and a constrained native scene; that implementation does not mark M5 or M7–M10 complete.
 
 The initial assignment gives Claude M3: disk-based job/encode/validation code first, then the dedicated TD template when available. M1 is a separate track; current owners and checkpoints are in the shared project status. Begin resource work with one 720p24 profile. A short smoke run validates the harness only; retain three valid repeats and the sustained run for actual acceptance. Expand to 1080p, another codec, or a full candidate matrix only when the first profile supports doing so.
 
@@ -148,7 +152,7 @@ Define the source primaries, transfer function, range, and RGB-to-YUV conversion
 
 ### M4 — Minimal playback integration
 
-Implement the architecture selected in M2: either configure/adapt the existing application or build the small native host. A new host needs only local asset selection, start/pause, a static fallback, and quit. Avoid a gallery or scheduling UI.
+The native engineering preview is implemented under [ADR 001](adr-001-native-preview.md), with its build/use/check instructions in [the app guide](../app/README.md). It has app-owned validated imports, a small local library, start/pause/stop, a static fallback and menu-bar quit. The expanded scope adds on-demand creation and data controls; this is not a marketplace or scheduling implementation. Final M4 acceptance still requires the lifecycle observations below.
 
 Implement the pause policy and lifecycle described below. Release only this application's resources; restore any setting the implementation changes. An invalid or missing asset shows a usable fallback and a concise error rather than silently consuming resources while displaying nothing.
 
@@ -234,7 +238,7 @@ These are **proposed project budgets informed by research and plan review**, not
 | WindowServer memory | Steady-state mean incremental physical footprint over its paired static baseline ≤64 MiB in each valid repeat; no sustained growth or added memory pressure | **Unverified; tentative budget requiring footprint measurement and stable attribution** |
 | GPU | Paired mean increment ≤3 percentage points in the fixed IOKit `Device Utilization %` series; pause returns to baseline range. Validate counter availability, resolution, and noise before use. | **Unverified; a global controlled comparison, not per-process GPU attribution** |
 | Sustained operation | No persistent post-warmup footprint growth over 30 minutes and repeated lifecycle transitions; no added memory pressure | Not tested |
-| Power/lifecycle | Static/paused under default battery policy, no sleep prevention, correct recovery reasons | Actual battery/lock/sleep cases pending |
+| Power/lifecycle | Static/paused under default battery policy, no sleep prevention, correct recovery reasons | Product battery fallback observed; actual lock/sleep/display removal and transition coverage pending |
 
 For a lower accepted profile, record its exact dimensions/FPS and apply the same budgets. The 200 MiB player/helper gate and 64 MiB WindowServer-increment gate are separate accounting checks: do not blindly add them to claim a 264 MiB total, because shared resources can affect attribution and accounting. A memory-slope result requires a documented tolerance based on measurement noise and allocator behavior; a short plateau does not prove the absence of all leaks.
 

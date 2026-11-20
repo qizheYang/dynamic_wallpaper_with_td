@@ -2,12 +2,14 @@
 
 Read this for weather/custom API wallpapers, interactive effects, BYO model APIs, or the “open a TD template” workflow. The [platform plan](../../../plan/agent-platform.md) is the maintained architecture; [research/06](../../../research/06-interactive-agent-platform.md) records verified upstream capabilities. Check implementation and current ownership before running anything. The [weather example](../../../examples/weather-los-angeles/README.md) is a design/configuration proposal, not an implemented connector.
 
+The actual [app guide](../../../app/README.md) describes the implemented preview: local video, scoped gradient proposals/export, editable TD copies, native LA weather and custom HTTPS JSON mappings. The app sends the shipped skill/job/shader/calibration context to a configured provider; it does not grant a returned model reply arbitrary TD-network or shell access. Keep that bounded flow distinct from a coding agent authoring and calibrating a new template in the repository.
+
 ## Understand behavior before selecting a renderer
 
 Recover the location, style, intended display/use and known preferences from context. Clarify only gaps that change delivery: periodic state changes versus continuous input response, the data endpoint/authentication the user wants, and whether a selected optional runtime is acceptable. Explain dependency/cost consequences in plain language; do not ask for keys in chat. A named city needs no device-location permission.
 
 - Predetermined movement: existing video job/export path.
-- Weather/daylight selects an appearance: authored video variants plus a native data broker can work with TD closed.
+- Weather/daylight selects an appearance: the current app has a constrained native weather scene with TD closed. Authored TD video variants plus the data broker remain planned, with each actual variant requiring normal export validation.
 - Continuous cloud/wind/particle or audio/mouse effects: a supported native scene, Web or TouchEngine/live backend is required. Verify the actual supported property/input contract.
 - TouchEngine can load `.tox` without an editor UI but requires installed runtime and suitable paid licensing. Do not describe it as runtime-free compilation. External TD/TouchPlayer mode also declares its running-process dependency.
 
@@ -23,7 +25,7 @@ Keep video defaults when they satisfy the brief; do not replace an explicit inte
 
 ## Configuration and production
 
-Use `.env.example` for nonsecret documentation and named credential placeholders. A local `.env` is only read when explicitly selected for the task; parse it as data and keep secret values out of model prompts, exported bundles and logs. The app's planned Keychain connection profiles associate each credential with its service. Agent and weather keys are separate. Do not strip an incompatible license/color/runtime declaration to make a validation step pass.
+Use `.env.example` for nonsecret documentation and named credential placeholders. A local `.env` is only read when explicitly selected for the task; parse it as data and keep secret values out of model prompts, exported bundles and logs. The app's Keychain profiles bind credentials to their configured service origin. Agent and custom-data keys are separate; the initial public LA weather connector needs no key. Do not strip an incompatible license/color/runtime declaration to make a validation step pass.
 
 Keep brief/data/app-package descriptions outside the current strict video job JSON. Use only implemented schemas and commands; propose a versioned contract if capabilities are missing. Do not manually forge pipeline manifests or `complete` states. For manual TD authoring, duplicate a suitable template into the user's project, preserve original source and unrelated sessions, then export through the normal validation path.
 

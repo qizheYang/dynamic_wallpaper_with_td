@@ -1,6 +1,6 @@
 ---
 name: td-wallpaper
-description: Create or revise wallpapers in dynamic_wallpaper_with_td, from requirements and editable TouchDesigner templates through video export or planned live/API-driven effects, validation, and Mac app playback. Use for this repository's authoring workflow and in-app agent integration, not general TouchDesigner tutoring.
+description: Create or revise wallpapers in dynamic_wallpaper_with_td, from requirements and editable TouchDesigner templates through validated video export, supported weather/API scenes, and Wallpaper Studio playback. Use for this repository's authoring workflow and in-app agent integration, not general TouchDesigner tutoring.
 ---
 
 # TD wallpaper production
@@ -19,6 +19,7 @@ This skill is versioned at `<repository>/skills/td-wallpaper`. Resolve the check
 | [Jobs](../../jobs/README.md) and `pipeline/job.py` | Current schema and examples; avoid copying a second schema into this skill. |
 | [TD guide](../../td/README.md) | Dedicated project, shader/controller, actual build/export procedure and diagnostic jobs. |
 | [Pipeline guide](../../pipeline/README.md) | Implemented commands, validation, cancellation, publication, and bundle contents. |
+| [Application guide](../../app/README.md), `app/Sources/WallpaperCore/`, `app/Sources/WallpaperStudio/` | Local app build/import, native playback, scoped model proposals, creation worker, Keychain, weather/custom-data scenes and current preview limitations. |
 | [Benchmark guide](../../research/benchmarks/README.md) | Controlled measurements, only when requested or needed for acceptance. |
 
 Confirm what exists before promising delivery. Source files, an existing `.toe`, and fake-adapter tests do not establish a validated export or an exercised adapter. `research/benchmarks/WallpaperProbe.swift` is a temporary measurement probe, not the product application. Read live status and relevant current artifacts to determine which host, renderer, connector and export steps are implemented; do not invent commands or present design examples as working features. Synthetic exports establish disk-tooling behavior only.
@@ -31,7 +32,9 @@ Use [the brief and handoff template](references/brief-and-handoff.md) when helpf
 
 ## Choose the delivery path
 
-Use a video export for predetermined animation. If weather/time selects between authored clips, use the planned data-driven variant path; the app reads the API, not the MP4. If input continuously changes particles, geometry, audio response or mouse effects, follow the live/API reference and choose an actually supported renderer. Do not flatten an explicit interactive requirement into a video and call it satisfied. Preserve editable TD sources separately from playback assets.
+Use a video export for predetermined animation. Wallpaper Studio's optional native weather scene can respond to LA conditions and bounded custom JSON properties without TD/model calls during refresh. For a request specifically requiring TD-authored weather variants, the multi-clip mapping path still needs implementation; an MP4 alone cannot fetch data. If input continuously changes particles, geometry, audio response or mouse effects, follow the live/API reference and choose an actually supported renderer. Do not flatten an explicit interactive requirement into a video and call it satisfied. Preserve editable TD sources separately from playback assets.
+
+The app's current model service reads this shipped skill and scoped template context, then returns clarification questions, fixed-template parameters, or a new-template requirement. It does not execute model-produced code or autonomously build arbitrary networks. A coding agent with repository/TD tools may implement a new template, but must complete its source/output calibration and real export before advertising it as supported. Keep these capabilities accurate when responding to a user's brief.
 
 The user chose feature equivalence as the primary Wallpaper Engine goal; direct Steam Workshop compatibility is a separate evaluation. A request for comparable effects does not imply permission or capability to copy/convert third-party Workshop content.
 

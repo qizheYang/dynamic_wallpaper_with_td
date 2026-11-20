@@ -6,7 +6,7 @@ Deliver a macOS wallpaper app with TD-independent default playback, on-demand ag
 
 For wallpaper requirements, authoring, or export tasks, read the project [td-wallpaper skill](skills/td-wallpaper/SKILL.md). Its canonical source lives in this repository; it does not imply global installation or an available TD connection. Reuse known user choices and ask only for missing inputs that materially change the requested wallpaper.
 
-The existing Swift program is a measurement probe. Read `agents_shared/README.md` for authoritative live status, current assignments, and review dispositions; other entry points link there instead of repeating approval states. The user delegated review decisions and requested Claude to begin the scoped implementation in `plan/claude-implementation-prompt.md`. Do not treat superseded questions in an old report as new permission gates.
+`research/benchmarks/WallpaperProbe.swift` is a measurement probe; the separate native application is in `app/`. Read `app/README.md` for actual app capabilities and `agents_shared/README.md` for authoritative live status, current assignments, and review dispositions. Other entry points link there instead of repeating approval states. The user delegated review decisions and requested continued implementation. The original scoped M3 handoff remains in `plan/claude-implementation-prompt.md`; do not treat it as the only current scope or repeat superseded permission questions.
 
 ## Before implementation
 
