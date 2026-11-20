@@ -4,12 +4,15 @@ These prove the stepping/cancel/precondition logic of td/controller/export_contr
 They do not prove that TDAdapter's TouchDesigner API calls are correct.
 """
 import importlib.util
+import copy
+import enum
 import pathlib
 import shutil
 import struct
 import sys
 import tempfile
 import unittest
+from types import SimpleNamespace
 
 REPO = pathlib.Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO))
@@ -104,14 +107,30 @@ class TDLikeAdapter(FakeAdapter):
     """Writes PNGs tagged like TD 2025.33230's writer: sRGB + gAMA + Rec.709 cHRM."""
 
     def __init__(self, redeclare, gamma=45455, **kwargs):
+        kwargs.setdefault("size", (1280, 720))
         super().__init__(**kwargs)
         if redeclare:
             self.png_color_redeclare = dict(ctl.TDAdapter.png_color_redeclare)
         self.gamma = gamma
         self.written = {}
+        self.identity = copy.deepcopy(ctl.load_profile()["identity"])
+
+    def project_file(self):
+        return str(REPO / "td/wallpaper_template.toe")
+
+    def color_identity(self):
+        return copy.deepcopy(self.identity)
 
     def save(self, path):
-        plain = frame_png(W, H, self.current_index, self.total)
+        # Exact retained TD chart payload; fake scheduling does not calibrate TD.
+        plain = (REPO / "td/calibration/raw-chart.png").read_bytes()
+        chunks, offset = [], 8
+        while offset < len(plain):
+            length, kind = struct.unpack(">I4s", plain[offset:offset + 8])
+            if kind not in (b"sRGB", b"gAMA", b"cHRM"):
+                chunks.append(plain[offset:offset + length + 12])
+            offset += length + 12
+        plain = plain[:8] + b"".join(chunks)
         tags = (png_chunk(b"gAMA", struct.pack(">I", self.gamma)) + png_chunk(b"sRGB", b"\0")
                 + png_chunk(b"cHRM", struct.pack(">8I", 31270, 32900, 64000, 33000, 30000, 60000, 15000, 6000)))
         header_end = 8 + 12 + 13
@@ -142,6 +161,13 @@ class ControllerTests(unittest.TestCase):
         attempt = create_attempt(td_job(**job_changes), self.root)
         adapter = adapter or FakeAdapter()
         return ctl.ExportController(adapter, attempt.path), adapter, attempt
+
+    def calibrated_controller(self, adapter=None, **job_changes):
+        changes = {"width": 1280, "height": 720,
+                   "template": {"id": "soft_gradient", "version": 1,
+                                "path": "td/wallpaper_template.toe"}}
+        changes.update(job_changes)
+        return self.controller(adapter or TDLikeAdapter(redeclare=True), **changes)
 
     def test_renders_every_frame_after_cook_delay_and_reports(self):
         controller, adapter, attempt = self.controller()
@@ -225,9 +251,26 @@ class ControllerTests(unittest.TestCase):
         controller, _, _ = self.controller(adapter, width=1920, height=1080)
         self.assertEqual(controller.check(), [])
 
+    def test_td_adapter_reads_mode_enum_without_td_module_export(self):
+        class ParMode(enum.Enum):
+            CONSTANT = 0
+            EXPRESSION = 1
+            EXPORT = 2
+            BIND = 3
+
+        adapter = object.__new__(ctl.TDAdapter)
+        adapter.td = SimpleNamespace()  # observed TD 2025: no td.ParMode member
+        for mode in ParMode:
+            with self.subTest(mode=mode):
+                self.assertEqual(adapter._expression_active(SimpleNamespace(mode=mode)),
+                                 mode is ParMode.EXPRESSION)
+        with self.assertRaises(PipelineError) as caught:
+            adapter._expression_active(SimpleNamespace(mode="ParMode.EXPRESSION"))
+        self.assertIn("builtins.str", caught.exception.message)
+
     def test_td_png_color_tags_are_redeclared_without_touching_pixels(self):
         adapter = TDLikeAdapter(redeclare=True)
-        controller, adapter, attempt = self.controller(adapter)
+        controller, adapter, attempt = self.calibrated_controller(adapter)
         controller.start()
         adapter.pump()
         self.assertEqual(controller.status, "complete")
@@ -242,9 +285,11 @@ class ControllerTests(unittest.TestCase):
         self.assertTrue(validate_sequence(attempt)["ok"])
         info = read_json(attempt.render_report_path)["info"]
         self.assertEqual(info["png_color_redeclared"]["cicp"], [1, 1, 0, 1])
+        self.assertEqual(info["color_calibration"]["profile_id"], "soft_gradient-v1-td2025.33230")
+        self.assertEqual(info["color_calibration"]["live_identity"], adapter.identity)
 
     def test_td_png_color_tags_are_rejected_without_redeclaration(self):
-        controller, adapter, attempt = self.controller(TDLikeAdapter(redeclare=False))
+        controller, adapter, attempt = self.calibrated_controller(TDLikeAdapter(redeclare=False))
         controller.start()
         adapter.pump()
         report = validate_sequence(attempt)
@@ -253,12 +298,58 @@ class ControllerTests(unittest.TestCase):
 
     def test_unexpected_renderer_color_chunks_fail_the_export(self):
         adapter = TDLikeAdapter(redeclare=True, gamma=100000)  # not the verified TD constant
-        controller, adapter, attempt = self.controller(adapter)
+        controller, adapter, attempt = self.calibrated_controller(adapter)
         controller.start()
         adapter.pump()
         self.assertEqual(controller.status, "failed")
         self.assertIn("unexpected_png_color", attempt.state()["failure"]["message"])
         self.assertFalse(attempt.render_report_path.exists())
+
+    def test_matching_png_tags_do_not_approve_wrong_renderer_provenance(self):
+        mutations = {
+            "td_build": "2099.99999", "template_op": "/project1/other",
+            "shader_sha256": "0" * 64, "output_color_space": "srgblinear",
+            "output_pixel_format": "rgba16float", "output_inputs": ["/project1/linear"],
+            "output_lock": True, "glsl_auxiliary_shader_bindings": ["predat"],
+            "glsl_mode": "compute",
+        }
+        for key, value in mutations.items():
+            with self.subTest(key=key):
+                adapter = TDLikeAdapter(redeclare=True)
+                adapter.identity[key] = value
+                controller, _, attempt = self.calibrated_controller(adapter)
+                with self.assertRaises(PipelineError) as caught:
+                    controller.start()
+                self.assertIn(key, caught.exception.message)
+                self.assertEqual(attempt.state()["state"], "rendering")
+                self.assertEqual(list(attempt.frames_dir.iterdir()), [])
+                self.assertFalse(attempt.render_report_path.exists())
+
+    def test_live_shader_edit_mid_export_stops_before_next_save(self):
+        controller, adapter, attempt = self.calibrated_controller()
+        controller.start()
+        adapter.pump(frames=ctl.COOK_DELAY_FRAMES)
+        self.assertEqual(len(adapter.saved_at), 1)
+        adapter.identity["shader_sha256"] = "0" * 64
+        adapter.pump()
+        self.assertEqual(controller.status, "failed")
+        self.assertEqual(len(adapter.saved_at), 1)
+        self.assertFalse(attempt.render_report_path.exists())
+        self.assertTrue(adapter.realtime)
+
+    def test_calibration_requires_declared_template_and_evidence_capability(self):
+        adapter = TDLikeAdapter(redeclare=True)
+        controller, _, attempt = self.calibrated_controller(adapter,
+            template={"id": "soft_gradient", "version": 1})
+        with self.assertRaises(PipelineError):
+            controller.start()
+        self.assertEqual(list(attempt.frames_dir.iterdir()), [])
+        adapter = FakeAdapter()
+        adapter.png_color_redeclare = dict(ctl.TDAdapter.png_color_redeclare)
+        controller, _, attempt = self.controller(adapter)
+        with self.assertRaises(PipelineError):
+            controller.start()
+        self.assertEqual(list(attempt.frames_dir.iterdir()), [])
 
     def test_non_empty_frames_dir_is_refused(self):
         controller, adapter, attempt = self.controller()

@@ -1,0 +1,131 @@
+{
+  "schema_version": 1,
+  "id": "soft_gradient-v1-td2025.33230",
+  "template": {
+    "id": "soft_gradient",
+    "version": 1,
+    "path": "td/wallpaper_template.toe",
+    "sha256": "a85a172da84c0612c91a58126c3dba54306f52d4fade7c98925eca878ef3bc60"
+  },
+  "shader": {
+    "path": "td/shaders/soft_gradient.frag",
+    "sha256": "466b0688233c5ca3605f3272665c38d9cdce53d9543d0483571becde72b7d4e0"
+  },
+  "source": {
+    "format": "png",
+    "bit_depth": 8,
+    "color": "rgb_rec709_bt709trc_full"
+  },
+  "cook_delay_frames": 2,
+  "identity": {
+    "td_build": "2025.33230",
+    "td_version": "099",
+    "td_product": "TouchDesigner",
+    "template_op": "/project1/soft_gradient",
+    "template_type": "baseCOMP",
+    "template_allow_cooking": true,
+    "template_parent_shortcut": "SoftGradient",
+    "glsl_op": "/project1/soft_gradient/glsl_art",
+    "glsl_type": "glslmultiTOP",
+    "glsl_inputs": [],
+    "glsl_bypass": false,
+    "glsl_lock": false,
+    "glsl_mode": "vertexpixel",
+    "glsl_auxiliary_shader_bindings": [],
+    "shader_op": "/project1/soft_gradient/glsl_art_pixel",
+    "shader_sha256": "466b0688233c5ca3605f3272665c38d9cdce53d9543d0483571becde72b7d4e0",
+    "glsl_format": "rgba8fixed",
+    "glsl_pixel_format": "rgba8fixed",
+    "glsl_size": [
+      1280,
+      720
+    ],
+    "glsl_color_space": "srgb",
+    "glsl_reference_white": "default",
+    "glsl_passes": 1,
+    "output_op": "/project1/soft_gradient/null_out",
+    "output_type": "nullTOP",
+    "output_inputs": [
+      "/project1/soft_gradient/glsl_art"
+    ],
+    "output_bypass": false,
+    "output_lock": false,
+    "output_pixel_format": "rgba8fixed",
+    "output_size": [
+      1280,
+      720
+    ],
+    "output_color_space": "srgb",
+    "output_reference_white": "default",
+    "output_passes": 1,
+    "uniform_bindings": [
+      {
+        "name": "uFrame",
+        "expression": "parent.SoftGradient.par.Frame",
+        "expression_active": true
+      },
+      {
+        "name": "uFrameCount",
+        "expression": "parent.SoftGradient.par.Framecount",
+        "expression_active": true
+      },
+      {
+        "name": "uSeed",
+        "expression": "parent.SoftGradient.par.Seed",
+        "expression_active": true
+      },
+      {
+        "name": "uCycles",
+        "expression": "parent.SoftGradient.par.Motioncycles",
+        "expression_active": true
+      },
+      {
+        "name": "uDebugChart",
+        "expression": "parent.SoftGradient.par.Debugchart",
+        "expression_active": true
+      },
+      {
+        "name": "uDebugIndex",
+        "expression": "parent.SoftGradient.par.Debugindex",
+        "expression_active": true
+      }
+    ]
+  },
+  "evidence": {
+    "path": "soft_gradient-v1-evidence.json",
+    "sha256": "61fbd9459117727a1a48756808bdf565e586feb3c65f6c7c263acd8e5a26fb9b"
+  },
+  "png_color_redeclare": {
+    "expect": {
+      "sRGB": {
+        "rendering_intent": 0
+      },
+      "gAMA": {
+        "gamma": 0.45455
+      },
+      "cHRM": {
+        "chromaticities": [
+          31270,
+          32900,
+          64000,
+          33000,
+          30000,
+          60000,
+          15000,
+          6000
+        ]
+      }
+    },
+    "remove": [
+      "sRGB",
+      "gAMA"
+    ],
+    "cicp": [
+      1,
+      1,
+      0,
+      1
+    ],
+    "reason": "Metadata correction for this pinned shader/build/output; retained chart samples unchanged. No AVPlayer/display verification implied."
+  }
+}

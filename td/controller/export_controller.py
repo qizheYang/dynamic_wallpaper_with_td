@@ -34,6 +34,12 @@ from pipeline.attempt import Attempt, frame_name, write_render_report  # noqa: E
 from pipeline.common import PipelineError, sha256_file  # noqa: E402
 from pipeline.png import inspect_png, redeclare_color  # noqa: E402
 
+# `td` is a native module inside TouchDesigner, not this repository's package.
+_CALIBRATION = _REPO / "td" / "calibration"
+if str(_CALIBRATION) not in sys.path:
+    sys.path.insert(0, str(_CALIBRATION))
+from wallpaper_calibration import load_profile, text_sha256, validate_identity  # noqa: E402
+
 # Color chunks TD 2025.33230's PNG writer emits on every frame (see TDAdapter).
 TD_PNG_COLOR_CONSTANT = {
     "sRGB": {"rendering_intent": 0},
@@ -65,6 +71,8 @@ class ExportController:
         self.status = "idle"
         self.message = ""
         self._saved_realtime = None
+        self._color_profile = None
+        self._color_evidence = None
 
     # ---- preconditions: refuse without changing the attempt's state ----
     def check(self):
@@ -97,7 +105,27 @@ class ExportController:
         size = self.adapter.output_size()
         if size != (job["width"], job["height"]):
             problems.append(f"output TOP is {size[0]}x{size[1]}, job needs {job['width']}x{job['height']}")
+        try:
+            self._check_color_calibration(reload_profile=True)
+        except Exception as error:
+            problems.append(f"color calibration refused: {error}")
         return problems
+
+    def _check_color_calibration(self, reload_profile=False):
+        fix = getattr(self.adapter, "png_color_redeclare", None)
+        if not fix:
+            if self._color_profile is not None:
+                raise PipelineError("unverified_color_calibration", "adapter removed the calibrated correction")
+            return None
+        if reload_profile or self._color_profile is None:
+            self._color_profile = load_profile()
+        profile = self._color_profile
+        if fix != profile["png_color_redeclare"]:
+            raise PipelineError("unverified_color_calibration", "adapter correction differs from reviewed profile")
+        self._color_evidence = validate_identity(
+            profile, self.adapter.color_identity(), self.adapter.project_file(),
+            self.job, self.cook_delay, _REPO)
+        return profile["png_color_redeclare"]
 
     def start(self):
         problems = self.check()
@@ -123,11 +151,13 @@ class ExportController:
             if self.attempt.state()["state"] != "rendering":
                 self._stop("cancelled", "attempt left 'rendering'", mark_failed=False)
                 return
+            # Recheck live DAT/configuration immediately before synchronous save:
+            # a matching on-disk .toe alone cannot detect edits in the open network.
+            fix = self._check_color_calibration()
             path = self.attempt.frames_dir / frame_name(self.index)
             self.adapter.save(path)
             if not path.is_file() or path.stat().st_size == 0:
                 raise PipelineError("save_failed", f"{path.name} was not written")
-            fix = getattr(self.adapter, "png_color_redeclare", None)
             if fix:
                 data = path.read_bytes()
                 found = inspect_png(data)["color_chunks"]
@@ -148,15 +178,16 @@ class ExportController:
             self._stop("failed", repr(error), mark_failed=True)
 
     def _finish(self):
+        fix = self._check_color_calibration()
         info = dict(self.adapter.info())
         declared = self.job["template"].get("path")
         if declared and (_REPO / declared).is_file():
             info["template_file"] = declared
             info["template_file_sha256"] = sha256_file(_REPO / declared)
         info["cook_delay_frames"] = self.cook_delay
-        fix = getattr(self.adapter, "png_color_redeclare", None)
         if fix:
             info["png_color_redeclared"] = dict(fix)
+            info["color_calibration"] = dict(self._color_evidence)
         write_render_report(self.attempt, self.adapter.renderer_name, self.index, info)
         self._restore()
         self.status, self.message = "complete", f"{self.index} frames written"
@@ -182,14 +213,12 @@ class TDAdapter:
     """The only code that calls the TouchDesigner API (exercised on TD 2025.33230)."""
 
     renderer_name = "touchdesigner"
-    # TD 2025.33230's PNG writer tags every file sRGB + gAMA 0.45455 + Rec.709 cHRM,
-    # whatever the TOP's Color Space parameter, and never changes the samples
-    # (td/run_td.py probe-color, all 11 options). The template's samples are
-    # BT.709-OETF encoded, which the chart check confirms survive unchanged, so
-    # the controller replaces the two wrong tags with a cICP that describes them.
+    # This request has no authority on its own: the controller requires the
+    # shipped profile/evidence and a matching live identity before every save.
     png_color_redeclare = {
         "expect": TD_PNG_COLOR_CONSTANT, "remove": ["sRGB", "gAMA"], "cicp": [1, 1, 0, 1],
-        "reason": "TD PNG writer emits constant sRGB/gAMA tags; samples are BT.709-OETF (chart-verified)",
+        "reason": "Metadata correction for this pinned shader/build/output; retained chart samples unchanged. "
+                  "No AVPlayer/display verification implied.",
     }
 
     def __init__(self, template, output):
@@ -214,6 +243,64 @@ class TDAdapter:
 
     def output_size(self):
         return (int(self.output.width), int(self.output.height))
+
+    @staticmethod
+    def _expression_active(par):
+        # Par.mode is documented as a ParMode value. The enum is not an
+        # attribute of the native `td` module in 2025.33230; obtain its class
+        # from the actual value instead of assuming a TD global namespace.
+        mode = par.mode
+        mode_type = type(mode)
+        try:
+            expression_mode = mode_type.EXPRESSION
+        except AttributeError:
+            raise PipelineError("unverified_color_calibration",
+                                f"unsupported parameter mode {mode!r} "
+                                f"({mode_type.__module__}.{mode_type.__name__}); "
+                                "documented ParMode.EXPRESSION member is unavailable") from None
+        return mode == expression_mode
+
+    def color_identity(self):
+        """Read actual live objects, not job declarations or shader files.
+
+        OP.opType/inputs/bypass/lock, TOP.pixelFormatName, and Par.eval()'s
+        DAT-to-OP resolution are documented by Derivative. Missing APIs/objects
+        deliberately fail closed. See td/calibration/README.md for references.
+        """
+        template, output = self.template, self.output
+        glsl = template.op("glsl_art")
+        pixel = glsl.par.pixeldat.eval()
+        identity = self.info()
+        identity.update({
+            "template_type": template.opType,
+            "template_allow_cooking": bool(template.allowCooking),
+            "template_parent_shortcut": str(template.par.parentshortcut.eval()),
+            "glsl_op": glsl.path, "glsl_type": glsl.opType,
+            "glsl_inputs": [op.path for op in glsl.inputs],
+            "glsl_bypass": bool(glsl.bypass), "glsl_lock": bool(glsl.lock),
+            "glsl_mode": str(glsl.par.mode.eval()),
+            "glsl_auxiliary_shader_bindings": [par.name for par in glsl.pars("predat", "vertexdat")
+                                                if par.eval() is not None],
+            "shader_op": pixel.path, "shader_sha256": text_sha256(pixel.text),
+            "glsl_format": str(glsl.par.format.eval()),
+            "uniform_bindings": [
+                {"name": str(glsl.par[f"vec{i}name"].eval()),
+                 "expression": glsl.par[f"vec{i}valuex"].expr,
+                 "expression_active": self._expression_active(glsl.par[f"vec{i}valuex"])}
+                for i in range(int(glsl.seq.vec.numBlocks))],
+        })
+        for prefix, target in (("glsl", glsl), ("output", output)):
+            identity.update({
+                prefix + "_pixel_format": str(target.pixelFormatName),
+                prefix + "_size": [int(target.width), int(target.height)],
+                prefix + "_color_space": str(target.par.parmcolorspace.eval()),
+                prefix + "_reference_white": str(target.par.parmreferencewhite.eval()),
+                prefix + "_passes": int(target.par.npasses.eval()),
+            })
+        identity.update({"output_type": output.opType,
+                         "output_inputs": [op.path for op in output.inputs],
+                         "output_bypass": bool(output.bypass), "output_lock": bool(output.lock)})
+        return identity
 
     def configure(self, job):
         par = self.template.par

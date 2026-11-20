@@ -8,6 +8,7 @@
 | `controller/soft_gradient_build.py` | Builds the template network from source inside TD and checks it after it cooks. |
 | `shaders/soft_gradient.frag` | GLSL pixel shader: a slow periodic dusk gradient. It is stateless, uses phase `i/N` and outputs BT.709-OETF values. It also has debug chart and index-strip modes. The build embeds this text in the pixel DAT. |
 | `controller/export_controller.py` | Steps one prepared attempt frame by frame and writes `render.json` at the end. `TDAdapter` is the only code that calls the TD API. |
+| `calibration/` | Reviewed build/template/output identity and retained raw/corrected chart evidence required for the PNG metadata correction. |
 | `controller/td_runner.py` | Batch entry point inside TD. It runs one request from disk and then quits. |
 | `run_td.py` | Host side. It starts a fresh TD process for one request, waits for it and prints the result. |
 | `bootstrap.toe` | Git-ignored. Generated from TD's own blank project plus the batch hook. |
@@ -27,7 +28,7 @@
 
 ## Batch workflow (no TD MCP connection needed)
 
-`run_td.py` refuses to start while any TouchDesigner is running, so a render never shares the machine with an interactive session or a playback measurement. Each run starts its own TD process and quits it (about 6 s of startup). The project's Execute DAT does nothing unless `WALLPAPER_TD_REQUEST` is set, so opening `wallpaper_template.toe` by hand is safe.
+`run_td.py` checks for an existing TouchDesigner process and refuses to start if it finds one or cannot inspect the process list. This check does not detect playback measurements or prevent another application from launching TD concurrently: finish controlled playback measurements before rendering, and keep TD and encoding closed during those measurements. Each run starts its own TD process and quits it (about 6 s of startup on the tested machine). The project's Execute DAT does nothing unless `WALLPAPER_TD_REQUEST` is set, so opening `wallpaper_template.toe` by hand is safe.
 
 ```sh
 python3 td/run_td.py probe                       # TD build, license type, API facts; changes nothing
@@ -38,7 +39,11 @@ python3 td/run_td.py export <attempt>            # frames + render.json; log in 
 python3 -m pipeline finalize <attempt>
 ```
 
-Order for a new template or TD version:
+`--timeout` is a finite number of seconds greater than zero and at most 3600 (default 900). The host deadline covers process inspection, optional bootstrap construction, TD startup, rendering and shutdown; bootstrap helpers also have a 30-second limit. Invalid values are rejected before any subprocess or output is created. SIGINT, SIGTERM and timeout trigger bounded cleanup of this run's child only (up to 5 seconds to terminate, then 5 seconds to kill). SIGKILL and power loss cannot run cleanup.
+
+An export becomes owned by the host only after TD accepts the attempt and records a matching request token and attempt snapshot. On failure, the host marks that still-rendering attempt failed only if its job and state remain unchanged; refused attempts and attempts advanced by another worker are preserved. A cleanup warning means the attempt needs inspection. Success requires a matching result with `ok: true`, no errors, and a zero TD exit status. A result written just before a shutdown crash is a failure.
+
+The production exporter accepts only the reviewed configuration in [the calibration profile](calibration/soft_gradient-v1-td2025.33230.json). For a new template or TD version, first collect raw evidence with `probe-color` and follow [the calibration procedure](calibration/README.md); changing a hash or matching the old PNG tags does not establish sample correctness. After the new configuration has a reviewed profile, run:
 
 1. **Chart check:** `jobs/soft_gradient_chart_check.json`, then `export`, then `pipeline verify-chart`. TD must store the shader's 8-bit values unchanged.
 2. **Index check:** `jobs/soft_gradient_index_check_720p24.json`, then `export`, then `pipeline verify-index`. Frame k must carry index k, with the strip at the bottom.
@@ -47,7 +52,7 @@ Order for a new template or TD version:
 
 ## TD facts this depends on (observed on 2025.33230)
 
-- **PNG color tags.** TD's PNG writer tags every file `sRGB` + `gAMA 0.45455` + Rec.709 `cHRM`, whatever the TOP's Color Space is set to. All 11 options were tried, Passthrough and Rec.709 included. It never changes the samples. Those tags misdescribe the template's BT.709-OETF samples, and the pipeline rightly rejects them. `TDAdapter` therefore declares a correction. After each save, the controller checks that the file's color chunks are exactly this known constant. It then replaces `sRGB`/`gAMA` with `cICP 1/1/0/1` (BT.709 primaries and transfer, RGB, full range) and keeps `cHRM`. All other bytes are unchanged, including the pixel data. Any other combination of chunks fails the export, because a new TD build has to be re-verified with `probe-color` and the chart check. `render.json` records the correction.
+- **PNG color tags.** In the retained chart experiment, all 11 TOP Color Space options produced identical pixel data and the same `sRGB` + `gAMA 0.45455` + Rec.709 `cHRM` tags. Those tags misdescribe this shader's BT.709-OETF samples. The exporter checks the reviewed TD build, template and shader hashes, live embedded shader, uniform bindings, output routing/format/color settings, and retained calibration evidence before accepting the correction. It rechecks the identity during rendering. After each save, it also requires the exact known PNG color chunks before replacing `sRGB`/`gAMA` with `cICP 1/1/0/1` (BT.709 primaries and transfer, RGB, full range); `cHRM` and pixel data stay unchanged. Unknown or changed configurations fail closed. `render.json` records the calibration identity and correction. This evidence covers the pinned configuration's PNG samples, not arbitrary templates or AVPlayer/display appearance.
 - **Project name.** An opened `name.toe` reports `project.name` as `name.1.toe`, its next incremental-save name. `TDAdapter.project_file()` maps it back to the file on disk, and the opened-project check still applies. `build` deletes the identical `.1.toe` copy that TD writes next to the template.
 - **Docked shader DATs.** `glslmultiTOP` created from Python auto-docks `_pixel`, `_compute` and `_info`. The build removes the unused `_compute`.
 - **Saving.** `TOP.save()` is synchronous by default. With a cook delay of 2 frames, the index check matched on all 480 frames.

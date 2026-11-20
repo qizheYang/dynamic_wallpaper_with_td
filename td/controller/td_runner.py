@@ -16,6 +16,8 @@ TD event loop. The host-side script also enforces a timeout and kills the
 process if it hangs.
 """
 import json
+import hashlib
+import math
 import os
 import pathlib
 import sys
@@ -33,6 +35,7 @@ TEMPLATE_PARENT = "/project1"
 TEMPLATE_NAME = "soft_gradient"
 BUILD_SETTLE_FRAMES = 10
 POLL_FRAMES = 6
+MAX_TIMEOUT = 3600.0
 
 
 def main():
@@ -70,9 +73,13 @@ class Runner:
             getattr(self, method)()
         except Exception:
             self.result["errors"].append(traceback.format_exc(limit=8))
-            if self.controller is not None and self.controller.status == "rendering":
-                self.controller.cancel("runner error")
-            self.finish()
+            try:
+                if self.controller is not None and self.controller.status == "rendering":
+                    self.controller.cancel("runner error")
+            except Exception:
+                self.result["errors"].append("controller cleanup failed: " + traceback.format_exc(limit=4))
+            finally:
+                self.finish()
 
     def finish(self):
         if self.done:
@@ -82,14 +89,28 @@ class Runner:
         self.result["ok"] = self.result["ok"] and not self.result["errors"]
         target = pathlib.Path(self.request.get("result") or str(self.request_path) + ".result.json")
         partial = target.with_name(target.name + ".partial")
-        partial.write_text(json.dumps(self.result, indent=2, default=str), encoding="utf-8")
-        os.replace(partial, target)
-        self.td.run("args[0].quit(force=True)", self.td.project, delayFrames=2)
+        try:
+            partial.write_text(json.dumps(self.result, indent=2, default=str, allow_nan=False), encoding="utf-8")
+            os.replace(partial, target)
+        finally:
+            # Result I/O failure must not skip the owned session's quit request.
+            self.td.run("args[0].quit(force=True)", self.td.project, delayFrames=2)
 
     # ---- steps ----
     def begin(self):
         self.request = json.loads(self.request_path.read_text(encoding="utf-8"))
-        self.deadline = time.monotonic() + float(self.request.get("timeout_seconds", 600))
+        if not isinstance(self.request, dict):
+            self.request = {}
+            raise ValueError("batch request must be an object")
+        timeout = self.request.get("timeout_seconds")
+        if (isinstance(timeout, bool) or not isinstance(timeout, (int, float))
+                or not math.isfinite(timeout) or not 0 < timeout <= MAX_TIMEOUT):
+            raise ValueError("timeout_seconds must be finite, >0 and <=3600")
+        self.deadline = time.monotonic() + timeout
+        token = self.request.get("request_token")
+        if not isinstance(token, str) or not token:
+            raise ValueError("request_token is required")
+        self.result["request_token"] = token
         td = self.td
         self.result["action"] = self.request.get("action")
         self.result["info"].update({
@@ -111,7 +132,7 @@ class Runner:
             raise ValueError(f"unknown action {action!r}")
 
     def probe(self):
-        """Report the API facts the template build relies on; changes nothing on disk."""
+        """Report API facts from a temporary network; do not save the project."""
         td = self.td
         parent = td.op(TEMPLATE_PARENT)
         info = self.result["info"]
@@ -213,7 +234,25 @@ class Runner:
         if template is None:
             raise RuntimeError(f"{TEMPLATE_PARENT}/{TEMPLATE_NAME} not found; open the built template project")
         output = template.op("null_out")
-        self.controller = export_controller.start_export(self.request["attempt"], template=template, output=output)
+        controller = export_controller.ExportController(
+            export_controller.TDAdapter(template, output), self.request["attempt"])
+        problems = controller.check()
+        if problems:
+            raise RuntimeError("export refused: " + "; ".join(problems))
+        attempt = pathlib.Path(self.request["attempt"]).resolve()
+        marker = {"request_token": self.request["request_token"], "attempt": self.request["attempt"]}
+        for name in ("state", "job"):
+            key = "attempt_%s_sha256" % name
+            digest = hashlib.sha256((attempt / (name + ".json")).read_bytes()).hexdigest()
+            if digest != self.request.get(key):
+                raise RuntimeError("attempt changed before export ownership: " + name)
+            marker[key] = digest
+        target = pathlib.Path(self.request["started_export"])
+        partial = target.with_name(target.name + ".partial")
+        partial.write_text(json.dumps(marker), encoding="utf-8")
+        os.replace(partial, target)
+        self.controller = controller
+        self.controller.start()
         self.started = time.monotonic()
         self.later("poll_export", POLL_FRAMES)
 
